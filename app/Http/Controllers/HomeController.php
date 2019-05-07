@@ -29,7 +29,6 @@ class HomeController extends Controller
     }
 
     public function test() {
-        dump($tours = Sportsman::find(1)->tours()->pluck('name')->first());
-        dump($sportsman = Tour::find(1)->sportsmen()->pluck('sportsman')->first());
+
     }
 }
