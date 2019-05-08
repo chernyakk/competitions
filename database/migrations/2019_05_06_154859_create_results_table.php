@@ -20,7 +20,10 @@ class CreateResultsTable extends Migration
             $table->unsignedBigInteger('tour_id')->nullable();
             $table->integer('haul')->nullable();
             $table->integer('point')->nullable();
-            $table->tinyInteger('type');
+            $table->tinyInteger('type')->nullable();
+            $table->integer('sector')->nullable();
+            $table->string('sector_type', 10)->nullable();
+
 
             $table->timestamps();
 
