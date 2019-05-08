@@ -21,6 +21,7 @@ class CreateResultsTable extends Migration
             $table->integer('haul')->nullable();
             $table->integer('point')->nullable();
             $table->tinyInteger('type')->nullable();
+            $table->integer('place')->nullable();
             $table->integer('sector')->nullable();
             $table->string('sector_type', 10)->nullable();
 
