@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Sportsman;
 use App\Models\Tour;
@@ -29,6 +30,6 @@ class HomeController extends Controller
     }
 
     public function test() {
-
+        dump();
     }
 }
