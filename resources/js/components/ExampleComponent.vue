@@ -3,10 +3,12 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Example Component</div>
+                    <div class="card-header">Панель Управления</div>
 
                     <div class="card-body">
-                        I'm an example component.
+                        <button class="btn btn-success" v-on:click="createContest">Создать соревнование</button>
+                        <button class="btn btn-success" v-on:click="listContest">Список соревнований</button>
+                        <button class="btn btn-success" v-on:click="configuration">Настройка</button>
                     </div>
                 </div>
             </div>
@@ -18,6 +20,18 @@
     export default {
         mounted() {
             console.log('Component mounted.')
+        },
+        methods: {
+            createContest: function (event) {
+                window.location = '/contest/create';
+            },
+            listContest: function (event) {
+                window.location = '/contest';
+            },
+            configuration: function (event) {
+                window.location = '/configuration';
+            }
+
         }
     }
 </script>
