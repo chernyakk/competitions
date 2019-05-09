@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\Sportsman;
-use App\Models\Tour;
+use App\Models\Contest;
+use App\Services\LoadDocsService;
+use Illuminate\Support\Facades\DB;
+
 
 class HomeController extends Controller
 {
@@ -19,17 +20,29 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
+
     public function index()
     {
         return view('home');
     }
 
-    public function test() {
-        dump();
+    public function createContest(LoadDocsService $loadDocsService, Request $request) {
+        if($request->isMethod('post')) {
+            $contest = new Contest(['name' => $request->input('cup')]);
+            $contest->save();
+            $ids = $loadDocsService->write('sportsmen', 'sportsman', $request->file('file'));
+
+            for($i = 1; $i <= $request->input('tours'); $i++) {
+                foreach ($ids as $key => $value) {
+                    $data[] = [
+                        'contest_id' => $contest->id,
+                        'sportsman_id' => $value,
+                        'tour_id' => $i
+                    ];
+                }
+            }
+
+            DB::table('results')->insert($data);
+        }
     }
 }

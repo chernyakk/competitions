@@ -19,4 +19,4 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::match(['get', 'post'], '/test', 'HomeController@test')->name('test');
+Route::match(['get', 'post'], '/contest/create', 'HomeController@createContest')->name('contest');
