@@ -20,7 +20,7 @@ class LoadDocsService
     /**
      * @return string
      */
-    protected function getDate() {
+    public function getDate() {
         return Carbon::now()->toDateTimeString();
     }
 
