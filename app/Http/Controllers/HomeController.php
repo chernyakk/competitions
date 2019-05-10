@@ -34,6 +34,16 @@ class HomeController extends Controller
     }
 
     /**
+     * @return Factory|View
+     */
+    public function listContest() {
+
+        $contests = Contest::all();
+
+        return view('app.contest.index', ['contests' => $contests]);
+    }
+
+    /**
      * @param LoadDocsService $loadDocsService
      * @param Request $request
      * @return Factory|RedirectResponse|View
@@ -69,12 +79,21 @@ class HomeController extends Controller
     }
 
     public function viewContest($id) {
-        echo $id;
-        return view('app.contest.view');
+        $qb = DB::table('results')
+            ->where('contest_id', '=', $id)
+            ->orderBy('sportsman_id');
+
+        $ct = $qb->max('tour_id');
+
+        return view('app.contest.view', ['ct' => $ct]);
     }
 
-    public function listContest() {
-        return view('app.contest.index');
+    public function editContest($id) {
+        return view('app.contest.edit');
+    }
+
+    public function updateContest($id) {
+
     }
 
     public function configuration() {

@@ -19,10 +19,12 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::match(['get', 'post'], '/contest', 'HomeController@listContest')->name('listContest');
+
 Route::match(['get', 'post'], '/contest/create', 'HomeController@createContest')->name('createContest');
 
 Route::match(['get', 'post'], '/contest/{id}', 'HomeController@viewContest')->name('viewContest');
 
-Route::match(['get', 'post'], '/contest', 'HomeController@listContest')->name('listContest');
+Route::match(['get', 'post'], '/contest/edit/{id}', 'HomeController@editContest')->name('editContest');
 
 Route::match(['get', 'post'], '/configuration', 'HomeController@configuration')->name('configuration');

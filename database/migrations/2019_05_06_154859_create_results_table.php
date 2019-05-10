@@ -15,12 +15,11 @@ class CreateResultsTable extends Migration
     {
         Schema::create('results', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('contest_id')->nullable();
             $table->unsignedBigInteger('sportsman_id');
+            $table->unsignedBigInteger('contest_id')->nullable();
             $table->unsignedBigInteger('tour_id')->nullable();
             $table->integer('haul')->nullable();
             $table->integer('point')->nullable();
-            $table->tinyInteger('type')->nullable();
             $table->integer('place')->nullable();
             $table->integer('sector')->nullable();
             $table->string('sector_type', 10)->nullable();
