@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Collection;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
@@ -84,8 +85,15 @@ class HomeController extends Controller
             ->orderBy('sportsman_id');
 
         $ct = $qb->max('tour_id');
+        $cnt = $qb->get();
 
-        return view('app.contest.view', ['ct' => $ct]);
+        $sum = DB::table('results')
+            ->select(DB::raw('sportsman_id, SUM(haul) as haul, SUM(point) as point'))
+            ->groupBy(DB::raw('sportsman_id'))
+            // ->orderBy('points', 'desc')
+            ->get();
+
+        return view('app.contest.view', ['ct' => $ct, 'cnt' => $cnt, 'sum' => $sum]);
     }
 
     public function editContest($id) {
