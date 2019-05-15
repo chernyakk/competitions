@@ -4,7 +4,7 @@
     <h1>Результаты</h1>
     <h2>Итоговая таблица</h2>
 
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="grid">
         <thead class="thead-light">
         <tr>
             <th colspan="3"></th>
@@ -21,7 +21,7 @@
             <th><span class="badge badge-danger">Б</span></th>
         @endfor
         <th><span class="badge badge-success">П</span></th>
-        <th><span class="badge badge-danger">Б</span></th>
+        <th><span class="badge badge-danger" id="sortId" data-sort-default>Б</span></th>
         <th>Место</th>
         <th>Действия</th>
         </tr>
@@ -38,7 +38,7 @@
                 @if($c->tour_id%$ct === 0)
                     <td>{{ $sum->where('sportsman_id', $c->sportsman_id)->first()->haul }}</td>
                     <td>{{ $sum->where('sportsman_id', $c->sportsman_id)->first()->point }}</td>
-                    <td>место</td>
+                    <td>1</td>
                     <td>
                         <a href="/view?id=1" title="Просмотр" aria-label="Просмотр">
                             <span class="fas fa-eye"></span>
