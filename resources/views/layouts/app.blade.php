@@ -11,6 +11,11 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/custom.js') }}" defer></script>
+    <script src="{{ asset('js/tablesort.min.js') }}"></script>
+
+    <!-- Include sort types you need -->
+    <script src="{{ asset('js/sorts/tablesort.number.min.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
