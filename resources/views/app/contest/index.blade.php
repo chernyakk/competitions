@@ -23,6 +23,9 @@
                     <a href="#" title="Жеребьевка" aria-label="Жеребьевка">
                     <button class="btn btn-outline-success btn-sm">жеребьевка</button>
                     </a>
+                    <a href="/cards/contest/{{ $contest->id }}" title="Карточки" aria-label="Карточки">
+                        <button class="btn btn-outline-danger btn-sm">карточки</button>
+                    </a>
                     <a href="/contest/{{ $contest->id }}" title="Просмотр" aria-label="Просмотр">
                         <button class="btn btn-outline-primary btn-sm">результаты</button>
                     </a>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sportsman;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\DB;
@@ -101,6 +102,23 @@ class HomeController extends Controller
 
     public function updateContest($id) {
 
+    }
+
+    public function cardsContest($contestId) {
+
+        $sportsmen = DB::table('sportsmen')
+            ->join('results', 'sportsmen.id', '=', 'results.sportsman_id')
+            ->where('results.contest_id', $contestId)
+            ->select('sportsmen.id', 'sportsmen.sportsman', 'results.contest_id')
+            ->groupBy('results.sportsman_id')
+            ->orderBy('sportsmen.sportsman', 'asc')
+            ->get();
+
+        return view('app.contest.list-cards', ['sportsmen' => $sportsmen]);
+    }
+
+    public function getCard(){
+        return view('app.contest.card');
     }
 
     public function configuration() {
