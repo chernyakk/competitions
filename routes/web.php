@@ -27,4 +27,8 @@ Route::match(['get', 'post'], '/contest/{id}', 'HomeController@viewContest')->na
 
 Route::match(['get', 'post'], '/contest/edit/{id}', 'HomeController@editContest')->name('editContest');
 
+Route::match(['get', 'post'], '/cards/contest/{id}', 'HomeController@cardsContest')->name('cardsContest');
+
+Route::match(['get', 'post'], '/card', 'HomeController@getCard')->name('getCard');
+
 Route::match(['get', 'post'], '/configuration', 'HomeController@configuration')->name('configuration');
