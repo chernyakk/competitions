@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sportsman;
-use Illuminate\Support\Collection;
+use App\Service\Randomizer;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Models\Contest;
 use App\Services\LoadDocsService;
@@ -117,11 +118,43 @@ class HomeController extends Controller
         return view('app.contest.list-cards', ['sportsmen' => $sportsmen]);
     }
 
-    public function getCard(){
-        return view('app.contest.card');
+    public function getCard($id, $sportsmanId){
+
+        $data = DB::table('sportsmen')
+            ->join('results', 'sportsmen.id', '=', 'results.sportsman_id')
+            ->where('results.sportsman_id', '=', $sportsmanId)
+            ->where('results.contest_id', '=', $id)
+            ->select('sportsmen.sportsman', 'results.id', 'results.sportsman_id', 'results.contest_id', 'results.tour_id',
+                'results.point', 'results.haul', 'results.place', 'results.sector', 'results.sector_type')
+            ->get();
+
+        $contest = Contest::find($id)->value('name');
+
+        return view('app.contest.card', ['data' => $data, 'contest' => $contest]);
     }
 
     public function configuration() {
+
+        $rand = new Randomizer(11, 20);
+
+        $rand->randomize();
+
+        dump($rand->newArray);
+
+        $rand->placeChanger();
+
         return view('app.configuration.index');
+    }
+
+    public function editHaul($contestId, $sportsmanId, $id) {
+
+        if(\request()->isMethod('post')) {
+            DB::table('results')->where('id', $id)
+                ->update(['haul' => Input::get('haul')]);
+            return \redirect('/cards/contest/'. $contestId .'/sportsman/'. $sportsmanId);
+        }
+
+        return view('app.contest.edit-haul');
+
     }
 }
