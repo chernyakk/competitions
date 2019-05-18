@@ -11,7 +11,7 @@
             @for($i = 0; $i < $ct; $i++)
                 <th scope="col" colspan="2">{{ $i + 1 }} тур</th>
             @endfor
-            <th colspan="2">Итого</th>
+            <th colspan="3">Итого</th>
         </tr>
         <tr>
         <th>#</th>
@@ -23,14 +23,13 @@
         <th><span class="badge badge-success">П</span></th>
         <th><span class="badge badge-danger" id="sortId" data-sort-default>Б</span></th>
         <th>Место</th>
-        <th>Действия</th>
         </tr>
         </thead>
         <tbody>
             <tr>
             @foreach($cnt as $c)
             @if($c->tour_id === 1)
-                <td>{{$c->sportsman_id }}</td>
+                <td>{{ $c->sector }}</td>
                 <td colspan="2">{{ \App\Models\Sportsman::where('id', '=', $c->sportsman_id)->value('sportsman') }}</td>
             @endif
                 <td>{{ $c->haul }}</td>
@@ -38,18 +37,7 @@
                 @if($c->tour_id%$ct === 0)
                     <td>{{ $sum->where('sportsman_id', $c->sportsman_id)->first()->haul }}</td>
                     <td>{{ $sum->where('sportsman_id', $c->sportsman_id)->first()->point }}</td>
-                    <td>1</td>
-                    <td>
-                        <a href="/view?id=1" title="Просмотр" aria-label="Просмотр">
-                            <span class="fas fa-eye"></span>
-                        </a>
-                        <a href="/update?id=1" title="Редактировать" aria-label="Редактировать">
-                            <span class="fas fa-edit"></span>
-                        </a>
-                        <a href="/delete?id=1" title="Удалить" aria-label="Удалить" data-confirm="Вы уверены, что хотите удалить этот элемент?" data-method="post">
-                            <span class="fas fa-trash-alt"></span>
-                        </a>
-                    </td>
+                    <td></td>
             </tr>
                 @endif
             @endforeach
