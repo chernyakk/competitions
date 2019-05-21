@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sportsman;
 use App\Service\Randomizer;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\DB;
@@ -128,20 +129,19 @@ class HomeController extends Controller
                 'results.point', 'results.haul', 'results.place', 'results.sector', 'results.sector_type')
             ->get();
 
-        $contest = Contest::find($id)->value('name');
+        $sportsman = DB::table('sportsmen')->where('id', $sportsmanId)->value('sportsman');
 
-        return view('app.contest.card', ['data' => $data, 'contest' => $contest]);
+        return view('app.contest.card', ['data' => $data, 'sportsman' => $sportsman]);
     }
 
     public function configuration() {
 
         $rand = new Randomizer(11, 20);
 
-        $rand->randomize();
-
-        dump($rand->newArray);
-
-        $rand->placeChanger();
+        dump($rand->placeAssignment());
+        dump($rand->placeChanger());
+        dump($rand->placeChanger());
+        dump($rand->placeChanger());
 
         return view('app.configuration.index');
     }
