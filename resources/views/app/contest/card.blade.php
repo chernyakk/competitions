@@ -4,8 +4,7 @@
     <table class="table table-bordered table-striped myclass">
         <thead>
         <tr>
-            <th rowspan="2" scope="col"> <h4>{{ $contest }}</h4> </th>
-            <th rowspan="2" scope="col">Спортсмен</th>
+            <th rowspan="2" scope="col"> <h4>{{ $sportsman }}</h4> </th>
             <th rowspan="2" scope="col">Сектор</th>
             <th rowspan="2" scope="col">Соперник</th>
             <th colspan="2" scope="col">Поимки</th>
@@ -20,7 +19,6 @@
         @foreach($data as $item)
         <tr>
             <th scope="row">Тур {{ $item->tour_id }}</th>
-            <td>{{ $item->sportsman }}</td>
             <td>{{ $item->place }}</td>
             <td>
                 {{ $s = \Illuminate\Support\Facades\DB::table('sportsmen')

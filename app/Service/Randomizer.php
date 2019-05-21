@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Service;
-
 
 class Randomizer
 {
@@ -10,7 +8,9 @@ class Randomizer
     public $keys;
     public $array;
     public $newArray;
+    public $arrayChange = [];
     public $place;
+    public static $call = 0;
 
     public function __construct($a, $b){
         $this->sportsmen = range($a, $b);
@@ -19,7 +19,7 @@ class Randomizer
         $this->array = array_combine($this->keys, $this->sportsmen);
     }
 
-    public function randomize()
+    public function placeAssignment()
     {
         $this->newArray = array();
         $i = 1;
@@ -32,31 +32,55 @@ class Randomizer
             }
             $i++;
         }
+        $this->newArray;
     }
 
     public function placeChanger()
     {
+        ++self::$call;
         $sc = intdiv(count($this->sportsmen), 2);
-        foreach ($this->newArray as $sportsmanID => $numPlace) {
-            foreach ($numPlace as $number => $place) {
-                if ($number % 2 == 0) {
-                    if (($place + 4) <= $sc) {
-                        echo $this->place = $place + 4;
-                        echo "t1"."<br>";
+        if(self::$call === 1) {
+            foreach ($this->newArray as $sportsmanID => $numPlace) {
+                foreach ($numPlace as $number => $place) {
+                    if ($number % 2 == 0) {
+                        if (($place + 4) <= $sc) {
+                            $this->arrayChange[$sportsmanID] = [$number => ($place + 4)];
+                        } else {
+                            $this->arrayChange[$sportsmanID] = [$number => (($place + 4) - $sc)];
+                        }
                     } else {
-                        echo $this->place = ($place + 4) - $sc;
-                        echo "t2"."<br>";
+                        if (1 <= ($place - 4)) {
+                            $this->arrayChange[$sportsmanID] = [$number => ($place - 4)];
+                        } else {
+                            $this->arrayChange[$sportsmanID] = [$number => (($place - 4) + $sc)];
+                        }
                     }
-                } else {
-                    if (1 - ($place - 4)) {
-                        echo $this->place = $place + 4;
-                        echo "t3". "<br>";
+                }
+            }
+        } else {
+            foreach ($this->arrayChange as $sportsmanID => $numPlace) {
+                foreach ($numPlace as $number => $place) {
+                    if ($number % 2 == 0) {
+                        if (($place + 4) <= $sc) {
+                            $this->arrayChange[$sportsmanID] = [$number => ($place + 4)];
+                        } else {
+                            $this->arrayChange[$sportsmanID] = [$number => (($place + 4) - $sc)];
+                        }
                     } else {
-                        echo $this->place = ($place - 4) + $sc;
-                        echo "t4" ."<br>";
+                        if (1 <= ($place - 4)) {
+                            $this->arrayChange[$sportsmanID] = [$number => ($place - 4)];
+                        } else {
+                            $this->arrayChange[$sportsmanID] = [$number => (($place - 4) + $sc)];
+                        }
                     }
                 }
             }
         }
+
+        $this->arrayChange;
+    }
+
+    public function insertRecord($contestId) {
+
     }
 }
