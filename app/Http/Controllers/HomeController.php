@@ -135,14 +135,6 @@ class HomeController extends Controller
     }
 
     public function configuration() {
-
-        $rand = new Randomizer(11, 20);
-
-        dump($rand->placeAssignment());
-        dump($rand->placeChanger());
-        dump($rand->placeChanger());
-        dump($rand->placeChanger());
-
         return view('app.configuration.index');
     }
 
@@ -156,5 +148,20 @@ class HomeController extends Controller
 
         return view('app.contest.edit-haul');
 
+    }
+
+    public function changer ($contestId) {
+        $ids = DB::table('results')
+            ->where('contest_id', '=', $contestId)
+            ->where('tour_id', '=', 1);
+
+        $min = $ids->min('sportsman_id');
+        $max = $ids->max('sportsman_id');
+
+        $rand = new Randomizer($min, $max);
+
+        $rand->insertRecord($contestId);
+
+        return \redirect()->route('listContest');
     }
 }

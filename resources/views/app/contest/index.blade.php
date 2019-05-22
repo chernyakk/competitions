@@ -20,7 +20,7 @@
                 <td>@if($contest->status) включено @else отключено @endif</td>
                 <td>{{ \Carbon\Carbon::parse($contest->created_at)->format('d/m/Y') }}</td>
                 <td>
-                    <a href="#" title="Жеребьевка" aria-label="Жеребьевка">
+                    <a href="/changer/{{ $contest->id }}" title="Жеребьевка" aria-label="Жеребьевка">
                     <button class="btn btn-outline-success btn-sm">жеребьевка</button>
                     </a>
                     <a href="/cards/contest/{{ $contest->id }}" title="Карточки" aria-label="Карточки">

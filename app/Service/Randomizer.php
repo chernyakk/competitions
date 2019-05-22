@@ -2,12 +2,14 @@
 
 namespace App\Service;
 
+use Illuminate\Support\Facades\DB;
+
 class Randomizer
 {
     public $sportsmen;
     public $keys;
     public $array;
-    public $newArray;
+    public $newArray = [];
     public $arrayChange = [];
     public $place;
     public static $call = 0;
@@ -19,9 +21,8 @@ class Randomizer
         $this->array = array_combine($this->keys, $this->sportsmen);
     }
 
-    public function placeAssignment()
+    public function placeAssignment($contestId)
     {
-        $this->newArray = array();
         $i = 1;
         foreach ($this->array as $key => $value) {
             if ($i <= intdiv(count($this->array), 2)) {
@@ -32,13 +33,23 @@ class Randomizer
             }
             $i++;
         }
+
         $this->newArray;
+
+        foreach ($this->newArray as $key => $value) {
+            DB::table('results')
+                ->where('sportsman_id', $key)
+                ->where('contest_id', '=', $contestId)
+                ->where('tour_id', '=', 1)
+                ->update(['sector' => key($value), 'place' => current($value)]);
+        }
     }
 
-    public function placeChanger()
+    public function placeChanger($contestId, $tourId)
     {
         ++self::$call;
         $sc = intdiv(count($this->sportsmen), 2);
+
         if(self::$call === 1) {
             foreach ($this->newArray as $sportsmanID => $numPlace) {
                 foreach ($numPlace as $number => $place) {
@@ -78,9 +89,26 @@ class Randomizer
         }
 
         $this->arrayChange;
+
+        foreach ($this->arrayChange as $key => $value) {
+            DB::table('results')
+                ->where('sportsman_id', $key)
+                ->where('contest_id', '=', $contestId)
+                ->where('tour_id', '=', $tourId)
+                ->update(['sector' => key($value), 'place' => current($value)]);
+        }
     }
 
     public function insertRecord($contestId) {
 
+        $this->placeAssignment($contestId);
+
+        $countTour = $qb = DB::table('results')
+            ->where('contest_id', '=', $contestId)
+            ->max('tour_id');
+
+        for($i = 2; $i <= $countTour; $i++) {
+            $this->placeChanger($contestId, $i);
+        }
     }
 }

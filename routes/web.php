@@ -33,4 +33,6 @@ Route::match(['get', 'post'], '/cards/contest/{id}/sportsman/{sportsmainId}', 'H
 
 Route::match(['get', 'post'], '/contest/{contestId}/sportsman/{sportsmainId}/haul/edit/{id}', 'HomeController@editHaul')->name('editHaul');
 
+Route::match(['get', 'post'], '/changer/{contestId}', 'HomeController@changer')->name('changer');
+
 Route::match(['get', 'post'], '/configuration', 'HomeController@configuration')->name('configuration');
