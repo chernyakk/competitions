@@ -10,6 +10,8 @@ class Randomizer
     public $keys;
     public $array;
     public $newArray = [];
+    public $evenArray = [];
+    public $notEvenArray = [];
     public $arrayChange = [];
     public $place;
     public static $call = 0;
@@ -19,22 +21,28 @@ class Randomizer
         $this->keys = range(1, count($this->sportsmen));
         shuffle($this->keys);
         $this->array = array_combine($this->keys, $this->sportsmen);
+        foreach ($this->array as $key => $value){
+            if ($key % 2 == 0){
+                $this->evenArray[$key] = $value;
+            }
+            else{
+                $this->notEvenArray[$key] = $value;
+            }
+        }
     }
 
     public function placeAssignment($contestId)
     {
         $i = 1;
-        foreach ($this->array as $key => $value) {
-            if ($i <= intdiv(count($this->array), 2)) {
-                $this->newArray[$value] = [$key => $i];
-            } else {
-                $i = 1;
-                $this->newArray[$value] = [$key => $i];
-            }
+        foreach ($this->evenArray as $key => $value) {
+            $this->newArray[$value] = [$key => $i];
             $i++;
         }
-
-        $this->newArray;
+        $i = 1;
+        foreach ($this->notEvenArray as $key => $value) {
+            $this->newArray[$value] = [$key => $i];
+            $i++;
+        }
 
         foreach ($this->newArray as $key => $value) {
             DB::table('results')
