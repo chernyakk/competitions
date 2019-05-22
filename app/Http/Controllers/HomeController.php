@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sportsman;
-use App\Service\Randomizer;
+use App\Services\Randomizer;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Models\Contest;
 use App\Services\LoadDocsService;
