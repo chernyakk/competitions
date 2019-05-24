@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\Randomizer;
+use App\Services\ResultCounter;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
@@ -141,7 +142,42 @@ class HomeController extends Controller
         if(\request()->isMethod('post')) {
             DB::table('results')->where('id', $id)
                 ->update(['haul' => Input::get('haul')]);
-            return \redirect('/cards/contest/'. $contestId .'/sportsman/'. $sportsmanId);
+
+            $q1 = DB::table('results')->where('id', $id);
+
+            $tourId = $q1->value('tour_id');
+
+            $place = $q1->value('place');
+
+            $s1 = $sportsmanId;
+
+            $s2 = DB::table('results')
+                ->where('contest_id', '=', $contestId)
+                ->where('tour_id', '=', $tourId)
+                ->where('place', '=', $place)
+                ->where('sportsman_id', '<>', $sportsmanId)
+                ->value('sportsman_id');
+
+              $h1 = DB::table('results')
+                  ->where('contest_id', '=', $contestId)
+                  ->where('tour_id', '=', $tourId)
+                  ->where('place', '=', $place)
+                  ->where('sportsman_id', '=', $sportsmanId)
+                  ->value('haul');
+
+              $h2 = DB::table('results')
+                  ->where('contest_id', '=', $contestId)
+                  ->where('tour_id', '=', $tourId)
+                  ->where('place', '=', $place)
+                  ->where('sportsman_id', '<>', $sportsmanId)
+                  ->value('haul');
+
+              if(!is_null($h1) && !is_null($h2)) {
+                  $point = new ResultCounter((int) $s1, (int) $s2, (int) $h1, (int) $h2, (int) $contestId, (int) $tourId);
+                  $point->result();
+              }
+
+            return redirect('/cards/contest/'. $contestId .'/sportsman/'. $sportsmanId);
         }
 
         return view('app.contest.edit-haul');
@@ -160,6 +196,6 @@ class HomeController extends Controller
 
         $rand->insertRecord($contestId);
 
-        return \redirect()->route('listContest');
+        return redirect()->route('listContest');
     }
 }
