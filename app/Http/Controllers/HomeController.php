@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sportsman;
 use App\Services\Randomizer;
 use App\Services\ResultCounter;
 use Illuminate\Contracts\View\Factory;
@@ -98,7 +99,23 @@ class HomeController extends Controller
     }
 
     public function editContest($id) {
-        return view('app.contest.edit');
+
+        $cont = DB::table('contests')
+            ->where('id', '=', $id)
+            ->first();
+
+        if (\request()->isMethod('post')) {
+            DB::table('contests')
+                ->where('id', '=', $id)
+                ->update([
+                    'name' => Input::get('cont'),
+                    'status' => Input::get('status') === 'on' ? 1 : 0
+                ]);
+
+            return redirect()-> route('listContest');
+        }
+
+        return view('app.contest.edit', ['cont' => $cont]);
     }
 
     public function updateContest($id) {
@@ -198,4 +215,21 @@ class HomeController extends Controller
 
         return redirect()->route('listContest');
     }
+
+    public function editSportsman($contestId, $id) {
+        $s = DB::table('sportsmen')
+            ->where('id', '=', $id)
+            ->value('sportsman');
+
+        if (\request()->isMethod('post')) {
+            DB::table('sportsmen')
+                ->where('id', '=', $id)
+                ->update(['sportsman' => Input::get('fio')]);
+
+            return redirect('/cards/contest/'. $contestId);
+        }
+
+        return view('app.contest.edit-sportsman', ['s' => $s]);
+    }
+
 }
