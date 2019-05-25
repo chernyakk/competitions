@@ -27,11 +27,13 @@ Route::match(['get', 'post'], '/contest/{id}', 'HomeController@viewContest')->na
 
 Route::match(['get', 'post'], '/contest/edit/{id}', 'HomeController@editContest')->name('editContest');
 
+Route::match(['get', 'post'], '/contest/{contestId}/sportsman/{sportsmainId}/haul/edit/{id}', 'HomeController@editHaul')->name('editHaul');
+
+Route::match(['get', 'post'], '/contest/{contestId}/sportsman/edit/{id}', 'HomeController@editSportsman')->name('editSportsman');
+
 Route::match(['get', 'post'], '/cards/contest/{id}', 'HomeController@cardsContest')->name('cardsContest');
 
 Route::match(['get', 'post'], '/cards/contest/{id}/sportsman/{sportsmainId}', 'HomeController@getCard')->name('getCard');
-
-Route::match(['get', 'post'], '/contest/{contestId}/sportsman/{sportsmainId}/haul/edit/{id}', 'HomeController@editHaul')->name('editHaul');
 
 Route::match(['get', 'post'], '/changer/{contestId}', 'HomeController@changer')->name('changer');
 
