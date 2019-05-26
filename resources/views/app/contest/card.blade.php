@@ -60,4 +60,8 @@
         @endforeach
         </tbody>
     </table>
+
+    <div class="form-group">
+        <a href="/cards/edit/contest/{{ $item->contest_id }}/sportsman/{{ $item->sportsman_id }}"><button class="btn btn-outline-success">редактировать карточку</button></a>
+    </div>
 @endsection
