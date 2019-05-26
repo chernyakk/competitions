@@ -150,6 +150,21 @@ class HomeController extends Controller
         return view('app.contest.card', ['data' => $data, 'sportsman' => $sportsman]);
     }
 
+    public function editCard ($id, $sportsmanId) {
+
+        $data = DB::table('sportsmen')
+            ->join('results', 'sportsmen.id', '=', 'results.sportsman_id')
+            ->where('results.sportsman_id', '=', $sportsmanId)
+            ->where('results.contest_id', '=', $id)
+            ->select('sportsmen.sportsman', 'results.id', 'results.sportsman_id', 'results.contest_id', 'results.tour_id',
+                'results.point', 'results.haul', 'results.place', 'results.sector', 'results.sector_type')
+            ->get();
+
+        $sportsman = DB::table('sportsmen')->where('id', $sportsmanId)->value('sportsman');
+
+        return view('app.contest.edit-card', ['data' => $data, 'sportsman' => $sportsman]);
+    }
+
     public function configuration() {
         return view('app.configuration.index');
     }

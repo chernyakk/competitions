@@ -12,3 +12,15 @@ function sort() {
 const s = new Tablesort(document.getElementById('grid'), {
     descending: true
 });
+
+
+// let i = 0;
+//
+// $(document).ready(function() {
+//     $('#rand').click(function() {
+//         i = i + 1;
+//         if(i > 1) {
+//             e.preventDefault();
+//         }
+//     });
+// });

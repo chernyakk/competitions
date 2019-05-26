@@ -71,6 +71,13 @@ class ResultCounter
         }
         else{
             if ($this->haul1 != 0){
+                # записываем себе 1.5 балла в таблицу
+                DB::table('results')
+                    ->where('sportsman_id', $this->s1)
+                    ->where('contest_id', $this->contestId)
+                    ->where('tour_id', $this->tourId)
+                    ->update(['point' => 1.5]);
+
                 # сопернику тоже 1.5 балла в таблицу
                 DB::table('results')
                     ->where('sportsman_id', $this->s2)
@@ -79,6 +86,12 @@ class ResultCounter
                     ->update(['point' => 1.5]);
             }
             else{
+                # записываем себе 0 баллов в таблицу
+                DB::table('results')
+                    ->where('sportsman_id', $this->s1)
+                    ->where('contest_id', $this->contestId)
+                    ->where('tour_id', $this->tourId)
+                    ->update(['point' => 0]);
                 # сопернику тоже 0 баллов в таблицу
                 DB::table('results')
                     ->where('sportsman_id', $this->s2)
