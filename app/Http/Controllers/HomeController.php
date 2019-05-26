@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sportsman;
 use App\Services\Randomizer;
 use App\Services\ResultCounter;
 use Illuminate\Contracts\View\Factory;
@@ -161,6 +160,99 @@ class HomeController extends Controller
             ->get();
 
         $sportsman = DB::table('sportsmen')->where('id', $sportsmanId)->value('sportsman');
+
+        if(\request()->isMethod('post')) {
+            $keys = \request()->all();
+            $i = 0;
+            foreach ($keys as $key => $value) {
+                ++$i;
+                if($i%2 === 0) {
+                    DB::table('results')
+                        ->where('id', '=', $key)
+                        ->update(['haul' => $value]);
+
+                    $q = DB::table('results')
+                        ->where('id', '=', $key);
+
+                    $tourId = $q->value('tour_id');
+
+                    $place = $q->value('place');
+
+                    $s1 = $sportsmanId;
+
+                    $s2 = DB::table('results')
+                        ->where('contest_id', '=', $id)
+                        ->where('tour_id', '=', $tourId)
+                        ->where('place', '=', $place)
+                        ->where('sportsman_id', '<>', $sportsmanId)
+                        ->value('sportsman_id');
+
+                    $h1 = DB::table('results')
+                        ->where('contest_id', '=', $id)
+                        ->where('tour_id', '=', $tourId)
+                        ->where('place', '=', $place)
+                        ->where('sportsman_id', '=', $sportsmanId)
+                        ->value('haul');
+
+                    $h2 = DB::table('results')
+                        ->where('contest_id', '=', $id)
+                        ->where('tour_id', '=', $tourId)
+                        ->where('place', '=', $place)
+                        ->where('sportsman_id', '<>', $sportsmanId)
+                        ->value('haul');
+
+                    if(!is_null($h1) && !is_null($h2)) {
+                        $point = new ResultCounter((int) $s1, (int) $s2, (int) $h1, (int) $h2, (int) $id, (int) $tourId);
+                        $point->result();
+                    }
+
+                } else {
+                    DB::table('results')
+                        ->where('sportsman_id', '=', $sportsmanId)
+                        ->where('contest_id',  '=',  $id)
+                        ->where('tour_id', $key)
+                        ->update(['haul' => $value]);
+
+                    $q = DB::table('results')
+                        ->where('sportsman_id', '=', $sportsmanId)
+                        ->where('contest_id',  '=',  $id)
+                        ->where('tour_id', $key);
+
+                    $tourId = $q->value('tour_id');
+
+                    $place = $q->value('place');
+
+                    $s1 = $sportsmanId;
+
+                    $s2 = DB::table('results')
+                        ->where('contest_id', '=', $id)
+                        ->where('tour_id', '=', $tourId)
+                        ->where('place', '=', $place)
+                        ->where('sportsman_id', '<>', $sportsmanId)
+                        ->value('sportsman_id');
+
+                    $h1 = DB::table('results')
+                        ->where('contest_id', '=', $id)
+                        ->where('tour_id', '=', $tourId)
+                        ->where('place', '=', $place)
+                        ->where('sportsman_id', '=', $sportsmanId)
+                        ->value('haul');
+
+                    $h2 = DB::table('results')
+                        ->where('contest_id', '=', $id)
+                        ->where('tour_id', '=', $tourId)
+                        ->where('place', '=', $place)
+                        ->where('sportsman_id', '<>', $sportsmanId)
+                        ->value('haul');
+
+                    if(!is_null($h1) && !is_null($h2)) {
+                        $point = new ResultCounter((int) $s1, (int) $s2, (int) $h1, (int) $h2, (int) $id, (int) $tourId);
+                        $point->result();
+                    }
+                }
+            }
+            return redirect('/cards/contest/'. $id .'/sportsman/'. $sportsmanId);
+        }
 
         return view('app.contest.edit-card', ['data' => $data, 'sportsman' => $sportsman]);
     }
