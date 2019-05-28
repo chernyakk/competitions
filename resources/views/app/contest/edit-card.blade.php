@@ -33,10 +33,10 @@
                      }}
                 </td>
                 <td>
-                    <input  name="{{ $item->tour_id }}" type="text" class="card-edit" id="card" value="{{ $item->haul }}" size="2" />
+                    <input  name="s{{ $item->tour_id }}" type="text" class="card-edit" id="card" value="{{ $item->haul }}" size="2" />
                 </td>
                 <td>
-                    <input name="{{
+                    <input name="c{{
                     $s = \Illuminate\Support\Facades\DB::table('sportsmen')
                      ->join('results', 'sportsmen.id', '=', 'results.sportsman_id')
                      ->where('results.contest_id', '=', $item->contest_id)

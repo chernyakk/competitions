@@ -84,7 +84,7 @@ class HomeController extends Controller
     public function viewContest($id) {
         $qb = DB::table('results')
             ->where('contest_id', '=', $id)
-            ->orderBy('sportsman_id');
+            ->orderBy('sportsman_id', 'desc');
 
         $ct = $qb->max('tour_id');
         $cnt = $qb->get();
@@ -167,12 +167,13 @@ class HomeController extends Controller
             foreach ($keys as $key => $value) {
                 ++$i;
                 if($i%2 === 0) {
+
                     DB::table('results')
-                        ->where('id', '=', $key)
+                        ->where('id', '=', substr($key, 1))
                         ->update(['haul' => $value]);
 
                     $q = DB::table('results')
-                        ->where('id', '=', $key);
+                        ->where('id', '=', substr($key, 1));
 
                     $tourId = $q->value('tour_id');
 
@@ -207,16 +208,17 @@ class HomeController extends Controller
                     }
 
                 } else {
+
                     DB::table('results')
                         ->where('sportsman_id', '=', $sportsmanId)
                         ->where('contest_id',  '=',  $id)
-                        ->where('tour_id', $key)
+                        ->where('tour_id', substr($key, 1))
                         ->update(['haul' => $value]);
 
                     $q = DB::table('results')
                         ->where('sportsman_id', '=', $sportsmanId)
                         ->where('contest_id',  '=',  $id)
-                        ->where('tour_id', $key);
+                        ->where('tour_id', substr($key, 1));
 
                     $tourId = $q->value('tour_id');
 
