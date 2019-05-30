@@ -126,7 +126,7 @@ class HomeController extends Controller
         $sportsmen = DB::table('sportsmen')
             ->join('results', 'sportsmen.id', '=', 'results.sportsman_id')
             ->where('results.contest_id', $contestId)
-            ->select('sportsmen.id', 'sportsmen.sportsman', 'results.contest_id')
+            ->select('sportsmen.id', 'sportsmen.sportsman', 'results.contest_id', 'results.sector')
             ->groupBy('results.sportsman_id')
             ->orderBy('sportsmen.sportsman', 'asc')
             ->get();
@@ -145,8 +145,9 @@ class HomeController extends Controller
             ->get();
 
         $sportsman = DB::table('sportsmen')->where('id', $sportsmanId)->value('sportsman');
+        $numberCard = DB::table('results')->where('sportsman_id', $sportsmanId)->value('sector');
 
-        return view('app.contest.card', ['data' => $data, 'sportsman' => $sportsman]);
+        return view('app.contest.card', ['data' => $data, 'sportsman' => $sportsman, 'numberCard' => $numberCard]);
     }
 
     public function editCard ($id, $sportsmanId) {
@@ -160,6 +161,7 @@ class HomeController extends Controller
             ->get();
 
         $sportsman = DB::table('sportsmen')->where('id', $sportsmanId)->value('sportsman');
+        $numberCard = DB::table('results')->where('sportsman_id', $sportsmanId)->value('sector');
 
         if(\request()->isMethod('post')) {
             $keys = \request()->all();
@@ -256,7 +258,7 @@ class HomeController extends Controller
             return redirect('/cards/contest/'. $id .'/sportsman/'. $sportsmanId);
         }
 
-        return view('app.contest.edit-card', ['data' => $data, 'sportsman' => $sportsman]);
+        return view('app.contest.edit-card', ['data' => $data, 'sportsman' => $sportsman, 'numberCard' => $numberCard]);
     }
 
     public function configuration() {

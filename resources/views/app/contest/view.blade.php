@@ -3,7 +3,6 @@
 @section('content')
     <h1>Результаты</h1>
     <h2>Итоговая таблица</h2>
-
     <table class="table table-bordered" id="grid">
         <thead class="thead-light">
         <tr>
@@ -44,4 +43,5 @@
 
         </tbody>
     </table>
+    <div class="back"><a href="{{ route('listContest') }}"><button class="btn btn-outline-primary">вернутся назад</button></a></div>
 @endsection
