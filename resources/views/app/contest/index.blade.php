@@ -40,4 +40,5 @@
             @endforeach
             </tbody>
         </table>
+        <div class="back"><a href="{{ route('home') }}"><button class="btn btn-outline-primary">вернутся назад</button></a></div>
 @endsection

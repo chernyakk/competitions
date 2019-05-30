@@ -14,7 +14,10 @@
                 </div>
                 <small id="help" class="form-text text-muted"></small>
             </div>
-            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a href="{{ route('listContest') }}"><button class="btn btn-outline-danger">отмена</button></a>
+            </div>
         </form>
     </div>
 @endsection
