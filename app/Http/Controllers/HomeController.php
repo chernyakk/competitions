@@ -332,15 +332,25 @@ class HomeController extends Controller
             ->where('id', '=', $id)
             ->value('sportsman');
 
+        $n = DB::table('results')
+            ->where('id', '=', $id)
+            ->where('contest_id', '=', $contestId)
+            ->groupBy('sector')
+            ->value('sector');
+
         if (\request()->isMethod('post')) {
             DB::table('sportsmen')
                 ->where('id', '=', $id)
                 ->update(['sportsman' => Input::get('fio')]);
+            DB::table('results')
+                ->where('id', '=', $id)
+                ->where('contest_id', '=', $contestId)
+                ->update(['sector' => Input::get('number')]);
 
             return redirect('/cards/contest/'. $contestId);
         }
 
-        return view('app.contest.edit-sportsman', ['s' => $s]);
+        return view('app.contest.edit-sportsman', ['s' => $s, 'n' => $n]);
     }
 
 }
