@@ -131,7 +131,7 @@ class HomeController extends Controller
             ->orderBy('sportsmen.sportsman', 'asc')
             ->get();
 
-        return view('app.contest.list-cards', ['sportsmen' => $sportsmen]);
+        return view('app.contest.list-cards', ['sportsmen' => $sportsmen, 'contestId' => $contestId]);
     }
 
     public function getCard($id, $sportsmanId){
@@ -148,6 +148,32 @@ class HomeController extends Controller
         $numberCard = DB::table('results')->where('sportsman_id', $sportsmanId)->value('sector');
 
         return view('app.contest.card', ['data' => $data, 'sportsman' => $sportsman, 'numberCard' => $numberCard]);
+    }
+
+    public function getAllCards($contestId){
+
+        $sportsmenInComp = DB::table('sportsmen')
+            ->join('results', 'sportsmen.id', '=', 'results.sportsman_id')
+            ->where('results.contest_id', '=', $contestId)
+            ->select('sportsmen.sportsman', 'results.sector', 'results.contest_id')
+            ->groupBy('results.sportsman_id')
+            ->orderBy('results.sector', 'asc')
+            ->get();
+
+        return view('app.contest.allcards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp]);
+    }
+
+    public function printAllCards($contestId){
+
+        $sportsmenInComp = DB::table('sportsmen')
+            ->join('results', 'sportsmen.id', '=', 'results.sportsman_id')
+            ->where('results.contest_id', '=', $contestId)
+            ->select('sportsmen.sportsman', 'results.sector', 'results.contest_id')
+            ->groupBy('results.sportsman_id')
+            ->orderBy('results.sector', 'asc')
+            ->get();
+
+        return view('app.contest.print-all-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp]);
     }
 
     public function editCard ($id, $sportsmanId) {
