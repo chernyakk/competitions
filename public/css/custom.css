@@ -1,0 +1,22 @@
+.myclass{
+    vertical-align: middle !important;
+}
+
+input.card-edit {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.noprint {
+    margin: 10px auto
+}
+
+@media print {
+    @page { margin: 0; }
+    body { margin: 1.6cm; }
+    #navbar-iframe {display: none; height: 0px; visibility: hidden;}
+    .noprint {display: none;}
+    body {background:#FFF; color:#000;}
+    a {text-decoration: underline; color:#00F;}
+}
