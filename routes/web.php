@@ -18,3 +18,29 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::match(['get', 'post'], '/contest', 'HomeController@listContest')->name('listContest');
+
+Route::match(['get', 'post'], '/contest/create', 'HomeController@createContest')->name('createContest');
+
+Route::match(['get', 'post'], '/contest/{id}', 'HomeController@viewContest')->name('viewContest');
+
+Route::match(['get', 'post'], '/contest/edit/{id}', 'HomeController@editContest')->name('editContest');
+
+Route::match(['get', 'post'], '/contest/{contestId}/sportsman/{sportsmainId}/haul/edit/{id}', 'HomeController@editHaul')->name('editHaul');
+
+Route::match(['get', 'post'], '/contest/{contestId}/sportsman/edit/{id}', 'HomeController@editSportsman')->name('editSportsman');
+
+Route::match(['get', 'post'], '/cards/contest/{id}', 'HomeController@cardsContest')->name('cardsContest');
+
+Route::match(['get', 'post'], '/cards/contest/{id}/sportsman/{sportsmainId}', 'HomeController@getCard')->name('getCard');
+
+Route::match(['get', 'post'], '/cards/contest/{id}/allcards', 'HomeController@getAllCards')->name('getAllCards');
+
+Route::match(['get', 'post'], '/cards/contest/{id}/print-cards', 'HomeController@printAllCards')->name('printAllCards');
+
+Route::match(['get', 'post'], '/cards/edit/contest/{id}/sportsman/{sportsmainId}', 'HomeController@editCard')->name('editCard');
+
+Route::match(['get', 'post'], '/changer/{contestId}', 'HomeController@changer')->name('changer');
+
+Route::match(['get', 'post'], '/configuration', 'HomeController@configuration')->name('configuration');
