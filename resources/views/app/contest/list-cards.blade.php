@@ -4,8 +4,8 @@
     <div class="list-group">
         <div class="back">
             <a href="{{ route('listContest') }}"><button class="btn btn-outline-primary">Вернуться назад</button></a>
-                <a href="/cards/contest/{{$contestId}}/allcards/" class="float-right"><button class="btn btn-danger">Список карточек</button></a>
-                <a href="/cards/contest/{{$contestId}}/print-cards/" class="float-right"><button class="btn btn-success">Печать карточек</button></a>
+            <a href="/cards/contest/{{$contestId}}/print-cards/" class="float-right"><button class="btn btn-success">Печать карточек</button></a>
+            <a href="/cards/contest/{{$contestId}}/allcards/" class="float-right"><button class="btn btn-danger">Список карточек</button></a>
         </div>
         <br>
         @foreach($sportsmen as $key => $item)
