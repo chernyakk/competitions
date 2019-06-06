@@ -173,7 +173,13 @@ class HomeController extends Controller
             ->orderBy('results.sector', 'asc')
             ->get();
 
-        return view('app.contest.print-all-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp]);
+        $tourCount = DB::table('results')
+            ->where('results.contest_id', '=', $contestId)
+            ->select('results.tour_id')
+            ->get()
+            ->max();
+
+        return view('app.contest.print-all-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp, 'tourCount' => ($tourCount->tour_id)]);
     }
 
     public function editCard ($id, $sportsmanId) {
