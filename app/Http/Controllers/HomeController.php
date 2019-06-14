@@ -54,9 +54,12 @@ class HomeController extends Controller
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function createContest(LoadDocsService $loadDocsService, Request $request) {
+
         if($request->isMethod('post')) {
+            dd($request);
             $contest = new Contest(['name' => $request->input('cup'), 'status' => $request->input('radioOption')]);
             $contest->save();
+
             $ids = $loadDocsService->write('sportsmen', 'sportsman', $request->file('file'));
 
             for($i = 1; $i <= $request->input('tours'); $i++) {
@@ -73,8 +76,6 @@ class HomeController extends Controller
             $result = DB::table('results')->insert($data);
             if($result) {
                 return redirect()->route('viewContest', ['id' => $contest->id]);
-            }else {
-
             }
         }
 
@@ -160,7 +161,13 @@ class HomeController extends Controller
             ->orderBy('results.sector', 'asc')
             ->get();
 
-        return view('app.contest.allcards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp]);
+        $tourCount = DB::table('results')
+            ->where('results.contest_id', '=', $contestId)
+            ->select('results.tour_id')
+            ->get()
+            ->max();
+
+        return view('app.contest.print-all-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp,'tourCount' => ($tourCount->tour_id)]);
     }
 
     public function printAllCards($contestId){
@@ -179,7 +186,8 @@ class HomeController extends Controller
             ->get()
             ->max();
 
-        return view('app.contest.print-all-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp, 'tourCount' => ($tourCount->tour_id)]);
+        return view('app.contest.allcards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp, 'tourCount' => ($tourCount->tour_id)]);
+
     }
 
     public function editCard ($id, $sportsmanId) {
@@ -344,19 +352,28 @@ class HomeController extends Controller
 
     }
 
-    public function changer ($contestId) {
-        $ids = DB::table('results')
-            ->where('contest_id', '=', $contestId)
-            ->where('tour_id', '=', 1);
 
-        $min = $ids->min('sportsman_id');
-        $max = $ids->max('sportsman_id');
+    public static function changer ($contestId, Request $request1) {
+        if($request1->isMethod('post')) {
+            $toss = $request1->input('toss');
 
-        $rand = new Randomizer($min, $max);
+            $ids = DB::table('results')
+                ->where('contest_id', '=', $contestId)
+                ->where('tour_id', '=', 1);
 
-        $rand->insertRecord($contestId);
+            $min = $ids->min('sportsman_id');
+            $max = $ids->max('sportsman_id');
 
-        return redirect()->route('listContest');
+            $rand = new Randomizer($min, $max, $toss);
+
+            $rand->insertRecord($contestId);
+
+                DB::table('contests')
+                    ->where('id', '=', $contestId)
+                    ->update(['rand' => 1]);
+                return redirect()->route('listContest');}
+
+        return view('app.contest.changer');
     }
 
     public function editSportsman($contestId, $id) {
