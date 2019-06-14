@@ -56,6 +56,7 @@ class HomeController extends Controller
     public function createContest(LoadDocsService $loadDocsService, Request $request) {
 
         if($request->isMethod('post')) {
+            dd($request);
             $contest = new Contest(['name' => $request->input('cup'), 'status' => $request->input('radioOption')]);
             $contest->save();
 
