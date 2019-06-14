@@ -56,7 +56,6 @@ class HomeController extends Controller
     public function createContest(LoadDocsService $loadDocsService, Request $request) {
 
         if($request->isMethod('post')) {
-            dd($request);
             $contest = new Contest(['name' => $request->input('cup'), 'status' => $request->input('radioOption')]);
             $contest->save();
 
@@ -87,6 +86,10 @@ class HomeController extends Controller
             ->where('contest_id', '=', $id)
             ->orderBy('sportsman_id', 'desc');
 
+        $contestName = DB::table('contests')
+            ->where('id', '=', $id)
+            ->value('name');
+
         $ct = $qb->max('tour_id');
         $cnt = $qb->get();
 
@@ -95,7 +98,7 @@ class HomeController extends Controller
             ->groupBy(DB::raw('sportsman_id'))
             ->get();
 
-        return view('app.contest.view', ['ct' => $ct, 'cnt' => $cnt, 'sum' => $sum]);
+        return view('app.contest.view', ['ct' => $ct, 'cnt' => $cnt, 'sum' => $sum, 'id' => $id, 'contestName' => $contestName]);
     }
 
     public function editContest($id) {
@@ -123,32 +126,21 @@ class HomeController extends Controller
     }
 
     public function cardsContest($contestId) {
-
-        $sportsmen = DB::table('sportsmen')
+        $sportsmenInComp = DB::table('sportsmen')
             ->join('results', 'sportsmen.id', '=', 'results.sportsman_id')
-            ->where('results.contest_id', $contestId)
-            ->select('sportsmen.id', 'sportsmen.sportsman', 'results.contest_id', 'results.sector')
+            ->where('results.contest_id', '=', $contestId)
+            ->select('sportsmen.sportsman', 'results.sector', 'results.contest_id')
             ->groupBy('results.sportsman_id')
-            ->orderBy('sportsmen.sportsman', 'asc')
+            ->orderBy('results.sector', 'asc')
             ->get();
 
-        return view('app.contest.list-cards', ['sportsmen' => $sportsmen, 'contestId' => $contestId]);
-    }
+        $tourCount = DB::table('results')
+            ->where('results.contest_id', '=', $contestId)
+            ->select('results.tour_id')
+            ->get()
+            ->max();
 
-    public function getCard($id, $sportsmanId){
-
-        $data = DB::table('sportsmen')
-            ->join('results', 'sportsmen.id', '=', 'results.sportsman_id')
-            ->where('results.sportsman_id', '=', $sportsmanId)
-            ->where('results.contest_id', '=', $id)
-            ->select('sportsmen.sportsman', 'results.id', 'results.sportsman_id', 'results.contest_id', 'results.tour_id',
-                'results.point', 'results.haul', 'results.place', 'results.sector', 'results.sector_type')
-            ->get();
-
-        $sportsman = DB::table('sportsmen')->where('id', $sportsmanId)->value('sportsman');
-        $numberCard = DB::table('results')->where('sportsman_id', $sportsmanId)->value('sector');
-
-        return view('app.contest.card', ['data' => $data, 'sportsman' => $sportsman, 'numberCard' => $numberCard]);
+        return view('app.contest.list-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp, 'tourCount' => $tourCount]);
     }
 
     public function getAllCards($contestId){
@@ -167,27 +159,12 @@ class HomeController extends Controller
             ->get()
             ->max();
 
-        return view('app.contest.print-all-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp,'tourCount' => ($tourCount->tour_id)]);
-    }
+        $contestName = DB::table('contests')
+            ->where('id', '=', $contestId)
+            ->value('name');
 
-    public function printAllCards($contestId){
 
-        $sportsmenInComp = DB::table('sportsmen')
-            ->join('results', 'sportsmen.id', '=', 'results.sportsman_id')
-            ->where('results.contest_id', '=', $contestId)
-            ->select('sportsmen.sportsman', 'results.sector', 'results.contest_id')
-            ->groupBy('results.sportsman_id')
-            ->orderBy('results.sector', 'asc')
-            ->get();
-
-        $tourCount = DB::table('results')
-            ->where('results.contest_id', '=', $contestId)
-            ->select('results.tour_id')
-            ->get()
-            ->max();
-
-        return view('app.contest.allcards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp, 'tourCount' => ($tourCount->tour_id)]);
-
+        return view('app.contest.print-all-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp,'tourCount' => ($tourCount->tour_id), 'contestName' => $contestName]);
     }
 
     public function editCard ($id, $sportsmanId) {
@@ -326,24 +303,24 @@ class HomeController extends Controller
                 ->where('sportsman_id', '<>', $sportsmanId)
                 ->value('sportsman_id');
 
-              $h1 = DB::table('results')
-                  ->where('contest_id', '=', $contestId)
-                  ->where('tour_id', '=', $tourId)
-                  ->where('place', '=', $place)
-                  ->where('sportsman_id', '=', $sportsmanId)
-                  ->value('haul');
+            $h1 = DB::table('results')
+                ->where('contest_id', '=', $contestId)
+                ->where('tour_id', '=', $tourId)
+                ->where('place', '=', $place)
+                ->where('sportsman_id', '=', $sportsmanId)
+                ->value('haul');
 
-              $h2 = DB::table('results')
-                  ->where('contest_id', '=', $contestId)
-                  ->where('tour_id', '=', $tourId)
-                  ->where('place', '=', $place)
-                  ->where('sportsman_id', '<>', $sportsmanId)
-                  ->value('haul');
+            $h2 = DB::table('results')
+                ->where('contest_id', '=', $contestId)
+                ->where('tour_id', '=', $tourId)
+                ->where('place', '=', $place)
+                ->where('sportsman_id', '<>', $sportsmanId)
+                ->value('haul');
 
-              if(!is_null($h1) && !is_null($h2)) {
-                  $point = new ResultCounter((int) $s1, (int) $s2, (int) $h1, (int) $h2, (int) $contestId, (int) $tourId);
-                  $point->result();
-              }
+            if(!is_null($h1) && !is_null($h2)) {
+                $point = new ResultCounter((int) $s1, (int) $s2, (int) $h1, (int) $h2, (int) $contestId, (int) $tourId);
+                $point->result();
+            }
 
             return redirect('/cards/contest/'. $contestId .'/sportsman/'. $sportsmanId);
         }
@@ -368,10 +345,10 @@ class HomeController extends Controller
 
             $rand->insertRecord($contestId);
 
-                DB::table('contests')
-                    ->where('id', '=', $contestId)
-                    ->update(['rand' => 1]);
-                return redirect()->route('listContest');}
+            DB::table('contests')
+                ->where('id', '=', $contestId)
+                ->update(['rand' => 1]);
+            return redirect()->route('listContest');}
 
         return view('app.contest.changer');
     }
@@ -382,7 +359,7 @@ class HomeController extends Controller
             ->value('sportsman');
 
         $n = DB::table('results')
-            ->where('id', '=', $id)
+            ->where('sportsman_id', '=', $id)
             ->where('contest_id', '=', $contestId)
             ->groupBy('sector')
             ->value('sector');
@@ -392,7 +369,7 @@ class HomeController extends Controller
                 ->where('id', '=', $id)
                 ->update(['sportsman' => Input::get('fio')]);
             DB::table('results')
-                ->where('id', '=', $id)
+                ->where('sportsman_id', '=', $id)
                 ->where('contest_id', '=', $contestId)
                 ->update(['sector' => Input::get('number')]);
 
