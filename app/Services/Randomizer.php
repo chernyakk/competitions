@@ -16,7 +16,8 @@ class Randomizer
     public $place;
     public static $call = 0;
 
-    public function __construct($a, $b){
+    public function __construct($a, $b, $t){
+        $this->toss = $t;
         $this->sportsmen = range($a, $b);
         $this->keys = range(1, count($this->sportsmen));
         shuffle($this->keys);
@@ -62,16 +63,16 @@ class Randomizer
             foreach ($this->newArray as $sportsmanID => $numPlace) {
                 foreach ($numPlace as $number => $place) {
                     if ($number % 2 == 0) {
-                        if (($place + 4) <= $sc) {
-                            $this->arrayChange[$sportsmanID] = [$number => ($place + 4)];
+                        if (($place + $this->toss) <= $sc) {
+                            $this->arrayChange[$sportsmanID] = [$number => ($place + $this->toss)];
                         } else {
-                            $this->arrayChange[$sportsmanID] = [$number => (($place + 4) - $sc)];
+                            $this->arrayChange[$sportsmanID] = [$number => (($place + $this->toss) - $sc)];
                         }
                     } else {
-                        if (1 <= ($place - 4)) {
-                            $this->arrayChange[$sportsmanID] = [$number => ($place - 4)];
+                        if (1 <= ($place - $this->toss)) {
+                            $this->arrayChange[$sportsmanID] = [$number => ($place - $this->toss)];
                         } else {
-                            $this->arrayChange[$sportsmanID] = [$number => (($place - 4) + $sc)];
+                            $this->arrayChange[$sportsmanID] = [$number => (($place - $this->toss) + $sc)];
                         }
                     }
                 }
@@ -80,16 +81,16 @@ class Randomizer
             foreach ($this->arrayChange as $sportsmanID => $numPlace) {
                 foreach ($numPlace as $number => $place) {
                     if ($number % 2 == 0) {
-                        if (($place + 4) <= $sc) {
-                            $this->arrayChange[$sportsmanID] = [$number => ($place + 4)];
+                        if (($place + $this->toss) <= $sc) {
+                            $this->arrayChange[$sportsmanID] = [$number => ($place + $this->toss)];
                         } else {
-                            $this->arrayChange[$sportsmanID] = [$number => (($place + 4) - $sc)];
+                            $this->arrayChange[$sportsmanID] = [$number => (($place + $this->toss) - $sc)];
                         }
                     } else {
-                        if (1 <= ($place - 4)) {
-                            $this->arrayChange[$sportsmanID] = [$number => ($place - 4)];
+                        if (1 <= ($place - $this->toss)) {
+                            $this->arrayChange[$sportsmanID] = [$number => ($place - $this->toss)];
                         } else {
-                            $this->arrayChange[$sportsmanID] = [$number => (($place - 4) + $sc)];
+                            $this->arrayChange[$sportsmanID] = [$number => (($place - $this->toss) + $sc)];
                         }
                     }
                 }
