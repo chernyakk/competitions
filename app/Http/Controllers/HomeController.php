@@ -143,7 +143,7 @@ class HomeController extends Controller
         return view('app.contest.list-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp, 'tourCount' => $tourCount]);
     }
 
-    public function printAllCards($contestId){
+    public function getAllCards($contestId){
 
         $sportsmenInComp = DB::table('sportsmen')
             ->join('results', 'sportsmen.id', '=', 'results.sportsman_id')
