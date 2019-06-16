@@ -3,7 +3,7 @@
 @section('content')
     <div class="float-right">
         <a href="{{ route('listContest') }}">
-            <button class="btn btn-outline-primary">К списку сорвенований</button>
+            <button class="btn btn-outline-primary">К списку соревнований</button>
         </a>
         <a href="/cards/contest/{{ $id }}">
             <button class="btn btn-outline-danger">Список участников</button>
@@ -55,5 +55,5 @@
                 </tbody>
             </table>
         </div></div>
-    <div class="back"><a href="{{ route('listContest') }}"><button class="btn btn-outline-primary">К списку сорвенований</button></a></div>
+    <div class="back"><a href="{{ route('listContest') }}"><button class="btn btn-outline-primary">К списку соревнований</button></a></div>
 @endsection

@@ -3,7 +3,7 @@
 @section('content')
     <div class="list-group">
         <div class="back">
-            <a href="{{ route('listContest') }}"><button class="btn btn-outline-primary">К списку сорвенований</button></a>
+            <a href="{{ route('listContest') }}"><button class="btn btn-outline-primary">К списку соревнований</button></a>
             <a href="/contest/{{$contestId}}" class="float-right">
                 <button class="btn btn-danger">Результаты соревнования</button>
             </a>
@@ -90,6 +90,6 @@
             <br>
         @endforeach
         <div class="back">
-            <a href="{{ route('listContest') }}"><button class="btn btn-outline-primary">К списку сорвенований</button></a>
+            <a href="{{ route('listContest') }}"><button class="btn btn-outline-primary">К списку соревнований</button></a>
         </div>
 @endsection
