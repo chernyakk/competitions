@@ -56,7 +56,6 @@ class HomeController extends Controller
     public function createContest(LoadDocsService $loadDocsService, Request $request) {
 
         if($request->isMethod('post')) {
-            dd($request);
             $contest = new Contest(['name' => $request->input('cup'), 'status' => $request->input('radioOption')]);
             $contest->save();
 
@@ -75,7 +74,7 @@ class HomeController extends Controller
             }
             $result = DB::table('results')->insert($data);
             if($result) {
-                return redirect()->route('viewContest', ['id' => $contest->id]);
+                return redirect()->route('listContest');
             }
         }
 
@@ -273,7 +272,7 @@ class HomeController extends Controller
                     }
                 }
             }
-            return redirect('/cards/contest/'. $id .'/sportsman/'. $sportsmanId);
+            return redirect('/cards/contest/'. $id);
         }
 
         return view('app.contest.edit-card', ['data' => $data, 'sportsman' => $sportsman, 'numberCard' => $numberCard]);
@@ -283,53 +282,19 @@ class HomeController extends Controller
         return view('app.configuration.index');
     }
 
-    public function editHaul($contestId, $sportsmanId, $id) {
 
-        if(\request()->isMethod('post')) {
-            DB::table('results')->where('id', $id)
-                ->update(['haul' => Input::get('haul')]);
+    public function deleteContest($contestId){
 
-            $q1 = DB::table('results')->where('id', $id);
+        DB::table('contests')
+            ->where('id', '=', $contestId)
+            ->delete();
 
-            $tourId = $q1->value('tour_id');
+        DB::table('results')
+            ->where('contest_id', '=', $contestId)
+            ->delete();
 
-            $place = $q1->value('place');
-
-            $s1 = $sportsmanId;
-
-            $s2 = DB::table('results')
-                ->where('contest_id', '=', $contestId)
-                ->where('tour_id', '=', $tourId)
-                ->where('place', '=', $place)
-                ->where('sportsman_id', '<>', $sportsmanId)
-                ->value('sportsman_id');
-
-            $h1 = DB::table('results')
-                ->where('contest_id', '=', $contestId)
-                ->where('tour_id', '=', $tourId)
-                ->where('place', '=', $place)
-                ->where('sportsman_id', '=', $sportsmanId)
-                ->value('haul');
-
-            $h2 = DB::table('results')
-                ->where('contest_id', '=', $contestId)
-                ->where('tour_id', '=', $tourId)
-                ->where('place', '=', $place)
-                ->where('sportsman_id', '<>', $sportsmanId)
-                ->value('haul');
-
-            if(!is_null($h1) && !is_null($h2)) {
-                $point = new ResultCounter((int) $s1, (int) $s2, (int) $h1, (int) $h2, (int) $contestId, (int) $tourId);
-                $point->result();
-            }
-
-            return redirect('/cards/contest/'. $contestId .'/sportsman/'. $sportsmanId);
-        }
-
-        return view('app.contest.edit-haul');
-
+        return redirect()-> route('listContest');
     }
-
 
     public static function changer ($contestId, Request $request1) {
         if($request1->isMethod('post')) {
