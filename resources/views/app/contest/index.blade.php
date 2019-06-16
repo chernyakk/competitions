@@ -55,6 +55,7 @@
     </table>
 
     <!-- Modal -->
+    @if ($contest !== null)
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -74,6 +75,13 @@
             </div>
         </div>
     </div>
+    @else
+        <tr>
+            <td colspan="5" class="text-center align-middle">
+                <h4>Нет доступных соревнований</h4>
+            </td>
+        </tr>
+    @endif
     @else
         <tr>
             <td colspan="5" class="text-center align-middle">
