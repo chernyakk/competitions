@@ -31,7 +31,7 @@ Route::match(['get', 'post'], '/contest/{contestId}/sportsman/edit/{id}', 'HomeC
 
 Route::match(['get', 'post'], '/cards/contest/{id}', 'HomeController@cardsContest')->name('cardsContest');
 
-Route::match(['get', 'post'], '/cards/contest/{id}/allcards', 'HomeController@printAllCards')->name('printAllCards');
+Route::match(['get', 'post'], '/cards/contest/{id}/allcards', 'HomeController@getAllCards')->name('getAllCards');
 
 Route::match(['get', 'post'], '/cards/edit/contest/{id}/sportsman/{sportsmanId}', 'HomeController@editCard')->name('editCard');
 
