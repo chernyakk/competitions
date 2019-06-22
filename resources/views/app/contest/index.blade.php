@@ -40,7 +40,7 @@
                         <a href="/contest/edit/{{ $contest->id }}" title="Редактировать" aria-label="Редактировать">
                             <button class="btn btn-outline-dark btn-sm">Редактировать</button>
                         </a>
-                        <button class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#myModal">Удалить</button>
+                        <button class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#myModal{{ $contest->id }}">Удалить</button>
 
                     </td>
                 </tr>
@@ -51,7 +51,7 @@
                 </tr>
                 @endif
                 <!-- Modal -->
-                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal fade" id="myModal{{ $contest->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">

@@ -8,7 +8,6 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
         <!-- Styles -->
         <style>
             html, body {
@@ -80,7 +79,9 @@
             @endif
 
             <div class="content">
-
+                <a href="/guest" title="Соревнования" aria-label="Соревнования">
+                    <button class="btn btn-outline-primary btn-lg">Войти как гость</button>
+                </a>
             </div>
         </div>
     </body>

@@ -285,6 +285,13 @@ class HomeController extends Controller
 
     public function deleteContest($contestId){
 
+        DB::table('sportsmen')
+            ->select('sportsmen.id', 'sportsmen.sportsman')
+            ->join('results', 'sportsmen.id', '=', 'results.sportsman_id')
+            ->where('results.contest_id', '=', $contestId)
+            ->groupBy('sportsmen.id')
+            ->delete();
+
         DB::table('contests')
             ->where('id', '=', $contestId)
             ->delete();

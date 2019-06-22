@@ -10,12 +10,19 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+//use App\Http\Controllers\GuestController as GuestController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 Auth::routes();
+
+Route::get('/guest', 'GuestController@listContest')->name('guestListContest');
+
+Route::get('/guest/contest/{id}', 'GuestController@viewContest')->name('guestContest');
+
+Route::get('/guest/cards/{id}', 'GuestController@cardsContest')->name('guestCardsContest');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
