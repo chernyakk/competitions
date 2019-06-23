@@ -72,9 +72,9 @@
                     @else
                         <a href="{{ route('login') }}">{{ __('auth.Login') }}</a>
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">{{ __('auth.Register') }}</a>
-                        @endif
+{{--                        @if (Route::has('register'))--}}
+{{--                            <a href="{{ route('register') }}">{{ __('auth.Register') }}</a>--}}
+{{--                        @endif--}}
                     @endauth
                 </div>
             @endif
