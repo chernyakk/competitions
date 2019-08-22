@@ -24,6 +24,8 @@ Route::get('/guest/contest/{id}', 'GuestController@viewContest')->name('guestCon
 
 Route::get('/guest/cards/{id}', 'GuestController@cardsContest')->name('guestCardsContest');
 
+Route::get('/guest/contest/{id}/final', 'GuestController@finalOfCompetition')->name('finalOfCompetition');
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::match(['get', 'post'], '/contest', 'HomeController@listContest')->name('listContest');
@@ -41,6 +43,16 @@ Route::match(['get', 'post'], '/cards/contest/{id}', 'HomeController@cardsContes
 Route::match(['get', 'post'], '/cards/contest/{id}/allcards', 'HomeController@getAllCards')->name('getAllCards');
 
 Route::match(['get', 'post'], '/cards/edit/contest/{id}/sportsman/{sportsmanId}', 'HomeController@editCard')->name('editCard');
+
+Route::match(['get', 'post'], '/contest/{id}/final', 'HomeController@finalOfContest')->name('finalOfContest');
+
+Route::match(['get', 'post'], '/contest/{id}/final/semifinal', 'HomeController@semifinal')->name('semifinal');
+
+Route::match(['get', 'post'], '/contest/{id}/final/finalCouples', 'HomeController@finalCouples')->name('finalCouples');
+
+Route::match(['get', 'post'], '/contest/{id}/final/couples', 'HomeController@couplesOfFinal')->name('couplesOfFinal');
+
+Route::match(['get', 'post'], '/contest/{id}/final/edit/{id1}/vs/{id2}', 'HomeController@finalEdit')->name('finalEdit');
 
 Route::match(['get', 'post'], '/changer/{contestId}', 'HomeController@changer')->name('changer');
 

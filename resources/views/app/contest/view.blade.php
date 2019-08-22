@@ -8,6 +8,9 @@
         <a href="/cards/contest/{{ $id }}">
             <button class="btn btn-outline-danger">Список участников</button>
         </a>
+        <a href="/contest/{{ $id }}/final">
+            <button class="btn btn-outline-secondary">Финал</button>
+        </a>
     </div>
     <h1>{{ $contestName }}</h1>
     <h2>Итоговая таблица</h2>
@@ -31,25 +34,37 @@
                         <th><span class="badge badge-danger">Б</span></th>
                     @endfor
                     <th><span class="badge badge-success">П</span></th>
-                    <th><span class="badge badge-danger" id="sortId" data-sort-default>Б</span></th>
+                    <th><span class="badge badge-danger">Б</span></th>
                     <th>Место</th>
                 </tr>
                 </thead>
                 <tbody>
+                <div style="display: none">{{$j = 1}}</div>
                 <tr>
-                    @foreach($cnt as $c)
-                        @if($c->tour_id === 1)
-                            <td>{{ $c->sector }}</td>
-                            <td colspan="2">{{ \App\Models\Sportsman::where('id', '=', $c->sportsman_id)->value('sportsman') }}</td>
-                        @endif
-                        <td>{{ $c->haul }}</td>
-                        <td>{{ $c->point }}</td>
-                        @if($c->tour_id%$ct === 0)
-                            <td>{{ $sum->where('sportsman_id', $c->sportsman_id)->first()->haul }}</td>
-                            <td>{{ $sum->where('sportsman_id', $c->sportsman_id)->first()->point }}</td>
-                            <td></td>
+                    @foreach($summary as $now)
+                        <div style="display: none">
+                        {{$cnt = \Illuminate\Support\Facades\DB::table('results')
+                            ->where('contest_id', '=', $id)
+                            ->where('sportsman_id', '=', $now->sportsman_id)
+                            ->orderBy('tour_id', 'asc')
+                            ->get()
+                            }}
+                        </div>
+                        @foreach($cnt as $c)
+                            @if($c->tour_id === 1)
+                                <td>{{ $c->sector }}</td>
+                                <td colspan="2">{{ \App\Models\Sportsman::where('id', '=', $c->sportsman_id)->value('sportsman') }}</td>
+                            @endif
+                            <td>{{ $c->haul }}</td>
+                            <td>{{ $c->point }}</td>
+                            @if($c->tour_id%$ct === 0)
+                                <td>{{$now->hauls}}</td>
+                                <td>{{$now->points}}</td>
+                                <td>{{$j}}</td>
+                                    <div style="display: none">{{$j++}}</div>
                 </tr>
-                @endif
+                    @endif
+                @endforeach
                 @endforeach
 
                 </tbody>
