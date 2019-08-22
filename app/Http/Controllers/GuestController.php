@@ -49,7 +49,20 @@ class GuestController extends BaseController
             ->groupBy(DB::raw('sportsman_id'))
             ->get();
 
-        return view('app.contest.guest-view', ['ct' => $ct, 'cnt' => $cnt, 'sum' => $sum, 'id' => $id, 'contestName' => $contestName]);
+        foreach ($sum as $sportsman){
+            DB::table('summary')
+                ->where('sportsman_id', '=', $sportsman->sportsman_id)
+                ->update([
+                    'hauls' => $sportsman->haul,
+                    'points' => $sportsman->point]);
+        };
+
+        $summary = DB::table('summary')
+            ->where('contest_id', '=', $id)
+            ->orderByRaw('points desc, hauls desc')
+            ->get();
+
+        return view('app.contest.guest-view', ['ct' => $ct, 'cnt' => $cnt, 'sum' => $sum, 'id' => $id, 'contestName' => $contestName, 'summary' => $summary]);
     }
 
 
@@ -69,6 +82,11 @@ class GuestController extends BaseController
             ->max();
 
         return view('app.contest.guest-list-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp, 'tourCount' => $tourCount]);
+    }
+
+    public function finalOfCompetition($id) {
+
+        return view('app.contest.guest-final-of-competition', ['id' => $id]);
     }
 
 }

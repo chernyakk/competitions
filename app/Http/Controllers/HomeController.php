@@ -61,6 +61,13 @@ class HomeController extends Controller
 
             $ids = $loadDocsService->write('sportsmen', 'sportsman', $request->file('file'));
 
+            foreach ($ids as $key => $value) {
+                $summaryData[] = [
+                    'contest_id' => $contest->id,
+                    'sportsman_id' => $value,
+                ];
+            }
+
             for($i = 1; $i <= $request->input('tours'); $i++) {
                 foreach ($ids as $key => $value) {
                     $data[] = [
@@ -73,9 +80,14 @@ class HomeController extends Controller
                 }
             }
             $result = DB::table('results')->insert($data);
-            if($result) {
+
+            $summary = DB::table('summary')->insert($summaryData);
+
+            if($result and $summary) {
                 return redirect()->route('listContest');
             }
+
+
         }
 
         return view('app.contest.create');
@@ -98,7 +110,22 @@ class HomeController extends Controller
             ->groupBy(DB::raw('sportsman_id'))
             ->get();
 
-        return view('app.contest.view', ['ct' => $ct, 'cnt' => $cnt, 'sum' => $sum, 'id' => $id, 'contestName' => $contestName]);
+        foreach ($sum as $sportsman){
+            DB::table('summary')
+                ->where('sportsman_id', '=', $sportsman->sportsman_id)
+                ->update([
+                    'hauls' => $sportsman->haul,
+                    'points' => $sportsman->point]);
+        };
+
+        $summary = DB::table('summary')
+            ->where('contest_id', '=', $id)
+            ->orderByRaw('points desc, hauls desc')
+            ->get();
+
+//        dd($cnt);
+
+        return view('app.contest.view', ['ct' => $ct, 'cnt' => $cnt, 'sum' => $sum, 'id' => $id, 'contestName' => $contestName, 'summary' => $summary]);
     }
 
     public function editContest($id) {
@@ -300,6 +327,10 @@ class HomeController extends Controller
             ->where('contest_id', '=', $contestId)
             ->delete();
 
+        DB::table('summary')
+            ->where('contest_id', '=', $contestId)
+            ->delete();
+
         return redirect()-> route('listContest');
     }
 
@@ -326,6 +357,199 @@ class HomeController extends Controller
         return view('app.contest.changer');
     }
 
+    public function couplesOfFinal ($id) {
+
+        foreach (range(1,16) as $now){
+            DB::table('final')
+                ->insert(['final.now_id' => $now, 'final.contest_id' => $id]);
+        }
+
+        $qb = DB::table('summary')
+            ->where('contest_id', '=', $id)
+            ->orderByRaw('points desc, hauls desc')
+            ->select('sportsman_id')
+            ->get();
+
+        $winners = $qb -> slice(0,8) -> shuffle();
+
+        $i = 1;
+
+        foreach ($winners as $now){
+            DB::table('final')
+                ->where('contest_id', '=', $id)
+                ->where('now_id', '=', $i)
+                ->update(['final.sportsman_id' => $now->sportsman_id]);
+            $i++;
+        }
+
+        return redirect()-> route('finalOfContest', ['id' => $id]);
+    }
+
+    public function semifinal($id){
+        $couple1 = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '>=', 1)
+            ->where('now_id', '<=', 2)
+            ->orderBy('hauls','desc')
+            ->first();
+        dump($couple1);
+        $couple2 = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '>=', 3)
+            ->where('now_id', '<=', 4)
+            ->orderBy('hauls', 'desc')
+            ->first();
+        dump($couple2);
+        $couple3 = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '>=', 5)
+            ->where('now_id', '<=', 6)
+            ->orderBy('hauls', 'desc')
+            ->first();
+        dump($couple3);
+        $couple4 = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '>=', 7)
+            ->where('now_id', '<=', 8)
+            ->orderBy('hauls', 'desc')
+            ->first();
+        dump($couple4);
+        DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id','=', 9)
+            ->update(['sportsman_id' => $couple1->sportsman_id]);
+
+        DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id','=', 10)
+            ->update(['sportsman_id' => $couple2->sportsman_id]);
+
+        DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id','=', 11)
+            ->update(['sportsman_id' => $couple3->sportsman_id]);
+
+        DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id','=', 12)
+            ->update(['sportsman_id' => $couple4->sportsman_id]);
+
+        return redirect()-> route('finalOfContest', ['id' => $id]);
+    }
+
+    public function finalCouples($id){
+        $winner1 = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '>=', 9)
+            ->where('now_id', '<=', 10)
+            ->orderBy('hauls','desc')
+            ->first();
+
+        $winner2 = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '>=', 11)
+            ->where('now_id', '<=', 12)
+            ->orderBy('hauls', 'desc')
+            ->first();
+
+        $loser1 = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '>=', 9)
+            ->where('now_id', '<=', 10)
+            ->orderBy('hauls','asc')
+            ->first();
+
+        $loser2 = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '>=', 11)
+            ->where('now_id', '<=', 12)
+            ->orderBy('hauls', 'asc')
+            ->first();
+
+        DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id','=', 13)
+            ->update(['sportsman_id' => $winner1->sportsman_id]);
+
+        DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id','=', 14)
+            ->update(['sportsman_id' => $winner2->sportsman_id]);
+
+        DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id','=', 15)
+            ->update(['sportsman_id' => $loser1->sportsman_id]);
+
+        DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id','=', 16)
+            ->update(['sportsman_id' => $loser2->sportsman_id]);
+
+        return redirect()-> route('finalOfContest', ['id' => $id]);
+    }
+
+    public function finalPlaces($id){
+        $winner = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '=', 13)
+            ->where('now_id', '=', 14)
+            ->orderBy('hauls','desc')
+            ->first();
+
+        $secondPlace = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '=', 13)
+            ->where('now_id', '=', 14)
+            ->orderBy('hauls', 'asc')
+            ->first();
+
+        $thirdPlace = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '=', 15)
+            ->where('now_id', '=', 16)
+            ->orderBy('hauls','desc')
+            ->first();
+
+        $fourthPlace = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '=', 15)
+            ->where('now_id', '=', 16)
+            ->orderBy('hauls', 'asc')
+            ->first();
+
+        return redirect()-> route('finalOfContest', ['id' => $id]);
+    }
+
+    public function finalOfContest($id) {
+
+        $finalists = DB::table('final')
+            ->join('sportsmen', 'final.sportsman_id','=', 'sportsmen.id')
+            ->where('final.contest_id', '=', $id)
+            ->select('final.now_id', 'final.sportsman_id', 'sportsmen.sportsman', 'final.hauls')
+            ->orderBy('final.now_id')
+            ->get();
+
+        $check1 = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->first();
+
+        $check2 = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id','=', 9)
+            ->select('sportsman_id')
+            ->first();
+
+        $check3 = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id','=', 13)
+            ->select('sportsman_id')
+            ->first();
+
+
+        return view('app.contest.final', ['id' => $id, 'check1' => $check1, 'check2' => $check2, 'check3' => $check3, 'finalists' => $finalists]);
+    }
+
     public function editSportsman($contestId, $id) {
         $s = DB::table('sportsmen')
             ->where('id', '=', $id)
@@ -350,6 +574,10 @@ class HomeController extends Controller
         }
 
         return view('app.contest.edit-sportsman', ['s' => $s, 'n' => $n]);
+    }
+
+    public function finalEdit($id, $id1, $id2){
+
     }
 
 }
