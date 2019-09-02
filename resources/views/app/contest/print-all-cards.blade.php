@@ -38,6 +38,7 @@
                             <th rowspan="2" scope="col">Соперник</th>
                             <th colspan="2" scope="col">Поимки</th>
                             <th rowspan="2" scope="col">Результат (баллов):</th>
+                            <th rowspan="2" scope="col">Подпись</th>
                         </tr>
                         <tr>
                             <th>Личные</th>
@@ -70,6 +71,7 @@
                                      ->value('sportsman')
                                      }}
                                 </td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
