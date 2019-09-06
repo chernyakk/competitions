@@ -70,16 +70,14 @@
                     @auth
                         <a href="{{ url('/home') }}">{{ __('main.Home') }}</a>
                     @else
-                        <a href="{{ route('login') }}">{{ __('auth.Login') }}</a>
-
-{{--                        @if (Route::has('register'))--}}
-{{--                            <a href="{{ route('register') }}">{{ __('auth.Register') }}</a>--}}
-{{--                        @endif--}}
                     @endauth
                 </div>
             @endif
 
             <div class="content">
+                <a href="/login" title="Соревнования" aria-label="Соревнования">
+                    <button class="btn btn-outline-danger btn-lg">Войти</button>
+                </a>
                 <a href="/guest" title="Соревнования" aria-label="Соревнования">
                     <button class="btn btn-outline-primary btn-lg">Войти как гость</button>
                 </a>
