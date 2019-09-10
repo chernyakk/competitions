@@ -14,7 +14,7 @@ class ChangeColumnPointDecimalSummaryTable extends Migration
     public function up()
     {
         Schema::table('summary', function (Blueprint $table) {
-            $table->float('point')->change();
+            $table->float('points')->change();
         });
     }
 
@@ -26,7 +26,7 @@ class ChangeColumnPointDecimalSummaryTable extends Migration
     public function down()
     {
         Schema::table('summary', function (Blueprint $table) {
-            $table->integer('point')->change();
+            $table->integer('points')->change();
         });
     }
 }
