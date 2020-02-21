@@ -52,6 +52,8 @@ Route::match(['get', 'post'], '/contest/{id}/final/finalCouples', 'HomeControlle
 
 Route::match(['get', 'post'], '/contest/{id}/final/couples', 'HomeController@couplesOfFinal')->name('couplesOfFinal');
 
+Route::match(['get', 'post'], '/contest/{id}/final/results', 'HomeController@finalResults')->name('finalResults');
+
 Route::match(['get', 'post'], '/contest/{id}/final/edit/{id1}/vs/{id2}', 'HomeController@finalEdit')->name('finalEdit');
 
 Route::match(['get', 'post'], '/changer/{contestId}', 'HomeController@changer')->name('changer');
