@@ -41,7 +41,7 @@
                 <tbody>
                 <div style="display: none">{{$j = 1}}</div>
                 <tr>
-                    @foreach($summary->slice(0, 8) as $now)
+                    @foreach($playoffPlaces as $now)
                         <div style="display: none">
                         {{$cnt = \Illuminate\Support\Facades\DB::table('results')
                             ->where('contest_id', '=', $id)
@@ -58,7 +58,7 @@
                             <td>{{ $c->haul }}</td>
                             <td>{{ $c->point }}</td>
                             @if($c->tour_id%$ct === 0)
-                                <td>{{$now->hauls}}</td>
+                                <td>{{$now->hauls + $now->oldHauls}}</td>
                                 <td>{{$now->points}}</td>
                                 <td>{{$j}}</td>
                                     <div style="display: none">{{$j++}}</div>
