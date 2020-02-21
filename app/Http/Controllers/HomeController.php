@@ -192,7 +192,6 @@ class HomeController extends Controller
             ->where('id', '=', $contestId)
             ->value('name');
 
-
         return view('app.contest.print-all-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp,'tourCount' => ($tourCount->tour_id), 'contestName' => $contestName]);
     }
 
@@ -510,6 +509,9 @@ class HomeController extends Controller
             return $oldHauls;
         }
 
+        $allSportsman = [];
+        $winSportsman = [];
+
         $qb = DB::table('results')
             ->where('contest_id', '=', $id)
             ->orderBy('sportsman_id', 'desc');
@@ -522,9 +524,9 @@ class HomeController extends Controller
         $cnt = $qb->get();
 
         $sum = DB::table('results')
-        ->select(DB::raw('sportsman_id, SUM(haul) as haul, SUM(point) as point'))
-        ->groupBy(DB::raw('sportsman_id'))
-        ->get();
+            ->select(DB::raw('sportsman_id, SUM(haul) as haul, SUM(point) as point'))
+            ->groupBy(DB::raw('sportsman_id'))
+            ->get();
 
         foreach ($sum as $sportsman){
             DB::table('summary')
@@ -544,51 +546,95 @@ class HomeController extends Controller
             ->whereIn('now_id', [13, 14])
             ->orderBy('hauls', 'desc')
             ->get();
-        dump($winnersPlaces);
         $losersPlaces = DB::table('final')
             ->where('contest_id', '=', $id)
             ->whereIn('now_id', [15, 16])
             ->orderBy('hauls', 'desc')
             ->get();
-        dump($losersPlaces);
+        if($losersPlaces[0]->hauls == $losersPlaces[1]->hauls) {
+            $comparer = DB::table('summary')
+                ->where('contest_id', '=', $id)
+                ->whereIn('sportsman_id', [$losersPlaces[0]->sportsman_id, $losersPlaces[1]->sportsman_id])
+                ->orderByRaw('points desc, hauls desc, last_haul desc')
+                ->get();
+            switch ($comparer[0]->sportsman_id == $losersPlaces[0]->sportsman_id){
+                case true:
+                    $losersPlaces[0]->place = 3;
+                    $losersPlaces[1]->place = 4;
+                break;
+                case false:
+                    $losersPlaces[0]->place = 4;
+                    $losersPlaces[1]->place = 3;
+                break;
+            }
+        }
         foreach($winnersPlaces as $sportsman) {
-            $sportsman->oldHauls = haulsCounter($sportsman, 12);
+            $sportsman->oldHauls = haulsCounter($sportsman, 16);
+            $sportsman->hauls = DB::table('summary')
+                ->where('sportsman_id', '=', $sportsman->sportsman_id)
+                ->where('contest_id', '=', $id)
+                ->value('hauls');
+            $sportsman->points = DB::table('summary')
+                ->where('sportsman_id', '=', $sportsman->sportsman_id)
+                ->where('contest_id', '=', $id)
+                ->value('points');
         }
-
         foreach($losersPlaces as $sportsman) {
-            $sportsman->oldHauls = haulsCounter($sportsman, 12);
+            $sportsman->oldHauls = haulsCounter($sportsman, 16);
+            $sportsman->hauls = DB::table('summary')
+                ->where('sportsman_id', '=', $sportsman->sportsman_id)
+                ->where('contest_id', '=', $id)
+                ->value('hauls');
+            $sportsman->points = DB::table('summary')
+                ->where('sportsman_id', '=', $sportsman->sportsman_id)
+                ->where('contest_id', '=', $id)
+                ->value('points');
         }
-        //ошибка в том, что массив обрезан так, словно места в summary с 5 по 8 - это и есть членоеды с 5 по 8, но по факту это не так
         $summary = DB::table('summary')
             ->where('contest_id', '=', $id)
             ->orderByRaw('points desc, hauls desc, last_haul desc')
             ->get();
-
-        $places58 = $summary->slice(4, 4);
+        $allSportsmanRaw = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->whereIn('now_id', range(1, 8))
+            ->select('sportsman_id')
+            ->get()
+            ->all();
+        $winSportsmanRaw = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->whereIn('now_id', range(13, 16))
+            ->select('sportsman_id')
+            ->get()
+            ->all();
+        foreach($allSportsmanRaw as $item => $value){
+            array_push($allSportsman, $value->sportsman_id);
+        }
+        foreach($winSportsmanRaw as $item => $value){
+            array_push($winSportsman, $value->sportsman_id);
+        }
+        $places58 = $summary->slice(0, 8);
+        $places581 = collect(array_diff($allSportsman, $winSportsman));
+        $places581->prepend(0);
+        $forgotten = collect();
         foreach($places58 as $sportsman) {
             $sportsman->oldHauls = haulsCounter($sportsman, 8);
+            $sportsman->points = DB::table('summary')
+                ->where('sportsman_id', '=', $sportsman->sportsman_id)
+                ->where('contest_id', '=', $id)
+                ->value('points');
+            if ($places581->search($sportsman->sportsman_id)){
+                $forgotten->push($sportsman);
+            };
         }
-        dump($places58);
         $playoffPlaces = collect();
-        foreach(collect([$winnersPlaces, $losersPlaces, $places58]) as $first){
+        foreach(collect([$winnersPlaces, $losersPlaces->where('place', '=', 3)->values()->all(),
+        $losersPlaces->where('place', '=', 4)->values()->all(), $forgotten]) as $first){
             foreach($first as $second){
                 $playoffPlaces->push($second);
             }
         }
-        /*for($i = 0; $i < 2; $i++) {
-            $playoffPlaces->put($i, $winnersPlaces->$i);
-        }
-        for($i = 2; $i < 4; $i++) {
-            $playoffPlaces->put($i, $losersPlaces->$i);
-        }
-        for($i = 4; $i < 8; $i++) {
-            $playoffPlaces->put($i, $places58->$i);
-        }*/
-        // $playoffPlaces = $playoffPlaces->merge($winnersPlaces, $losersPlaces, $places58);
-        dd($playoffPlaces);
         return view('app.contest.final-results', ['ct' => $ct, 'cnt' => $cnt, 'id' => $id,
-        'contestName' => $contestName, 'summary' => $summary, 'winnersPlaces' => $winnersPlaces,
-        'losersPlaces' => $losersPlaces, 'places58' => $places58]);
+        'contestName' => $contestName, 'summary' => $summary, 'playoffPlaces' => $playoffPlaces]);
     }
 
     public function finalOfContest($id) {
