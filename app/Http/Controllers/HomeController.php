@@ -105,10 +105,16 @@ class HomeController extends Controller
         $ct = $qb->max('tour_id');
         $cnt = $qb->get();
 
-        $checker = DB::table('final')
+        $result = DB::table('final')
             ->where('contest_id', '=', $id)
-            ->where('now_id', '=', 14)
-            ->value('hauls');
+            ->whereIn('now_id', range(13, 16))
+            ->select('hauls')
+            ->get();
+        $checker = [];
+        foreach($result as $check) {
+            array_push($checker, $check->hauls);
+        }
+        $checker = array_search(null, $checker);
 
         $sum = DB::table('results')
             ->select(DB::raw('sportsman_id, SUM(haul) as haul, SUM(point) as point'))
