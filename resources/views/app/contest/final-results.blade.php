@@ -8,6 +8,9 @@
         <a href="/cards/contest/{{ $id }}">
             <button class="btn btn-outline-danger">Список участников</button>
         </a>
+        <a href="/contest/{{ $id }}">
+            <button class="btn btn-outline-success">Таблица предварительных результатов</button>
+        </a>
         <a href="/contest/{{ $id }}/final">
             <button class="btn btn-outline-secondary">Финал</button>
         </a>

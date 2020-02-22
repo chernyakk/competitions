@@ -3,6 +3,10 @@
 @section('content')
     <div class="text-center">
         <div class="back">
+            @if(($finalists[12]->hauls)&&($finalists[13]->hauls)&&($finalists[14]->hauls)&&($finalists[15]->hauls))
+            <a href="/contest/{{ $id }}/final/results" class="float-right">
+                <button class="btn btn-outline-success">Итоговые результаты</button>
+            </a> @endif
             <a href="/contest/{{$id}}" class="float-right">
                 <button class="btn btn-outline-danger">Результаты соревнования</button>
             </a>
