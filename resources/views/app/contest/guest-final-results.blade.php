@@ -98,5 +98,5 @@
                 </tbody>
             </table>
         </div></div>
-    <div class="back"><a href="{{ route('giestListContest') }}"><button class="btn btn-outline-primary">К списку соревнований</button></a></div>
+    <div class="back"><a href="{{ route('guestListContest') }}"><button class="btn btn-outline-primary">К списку соревнований</button></a></div>
 @endsection
