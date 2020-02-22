@@ -17,11 +17,16 @@
             @foreach($contests as $contest)
                 @if ($contest)
                 <div style="display: none">
-                {{$checker = \Illuminate\Support\Facades\DB::table('final')
-                    ->where('contest_id', '=', $contest->id)
-                    ->where('now_id', '=', 14)
-                    ->value('hauls')
-                }}
+                <?php   $result = DB::table('final')
+                            ->where('contest_id', '=', $contest->id)
+                            ->whereIn('now_id', range(13, 16))
+                            ->select('hauls')
+                            ->get();
+                        $checker = array()?>
+                        @foreach($result as $check)
+                            {{array_push($checker, $check->hauls)}}
+                        @endforeach
+                        <?php $checker = array_search(null, $checker) ?>
                 </div>
                 <tr>
                     <th scope="row">{{ $contest->id }}</th>
@@ -46,7 +51,7 @@
                         </a>
                         <a href="/contest/{{ $contest->id }}/final/results" title="Финал" aria-label="Итоги финала">
                             <button class="btn btn-outline-success btn-sm"
-                                    @if (!$checker) data-toggle="tooltip" data-placement="bottom"
+                                    @if ($checker) data-toggle="tooltip" data-placement="bottom"
                                     title="Станет доступен после предварительного этапа" disabled
                                 @endif>Итоги финала</button>
                         </a>

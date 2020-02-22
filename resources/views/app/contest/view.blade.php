@@ -11,7 +11,7 @@
         <a href="/contest/{{ $id }}/final">
             <button class="btn btn-outline-secondary">Финал</button>
         </a>
-        @if($checker) <a href="/contest/{{ $id }}/final/results">
+        @if(!$checker) <a href="/contest/{{ $id }}/final/results">
             <button class="btn btn-outline-success">Итоговые результаты</button>
         </a> @endif
     </div>

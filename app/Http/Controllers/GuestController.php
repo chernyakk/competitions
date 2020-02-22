@@ -44,6 +44,17 @@ class GuestController extends BaseController
         $ct = $qb->max('tour_id');
         $cnt = $qb->get();
 
+        $result = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->whereIn('now_id', range(13, 16))
+            ->select('hauls')
+            ->get();
+        $checker = [];
+        foreach($result as $check) {
+            array_push($checker, $check->hauls);
+        }
+        $checker = array_search(null, $checker);
+
         $sum = DB::table('results')
             ->select(DB::raw('sportsman_id, SUM(haul) as haul, SUM(point) as point'))
             ->groupBy(DB::raw('sportsman_id'))
