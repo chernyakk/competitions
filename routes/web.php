@@ -26,6 +26,8 @@ Route::get('/guest/cards/{id}', 'GuestController@cardsContest')->name('guestCard
 
 Route::get('/guest/contest/{id}/final', 'GuestController@finalOfCompetition')->name('finalOfCompetition');
 
+Route::get('/guest/contest/{id}/final/results', 'GuestController@finalResults')->name('guestFinalResults');
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::match(['get', 'post'], '/contest', 'HomeController@listContest')->name('listContest');

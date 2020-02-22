@@ -20,7 +20,7 @@
                 {{$checker = \Illuminate\Support\Facades\DB::table('final')
                     ->where('contest_id', '=', $contest->id)
                     ->where('now_id', '=', 14)
-                    ->value('hauls');
+                    ->value('hauls')
                 }}
                 </div>
                 <tr>
