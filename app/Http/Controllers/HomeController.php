@@ -105,6 +105,11 @@ class HomeController extends Controller
         $ct = $qb->max('tour_id');
         $cnt = $qb->get();
 
+        $checker = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '=', 14)
+            ->value('hauls');
+
         $sum = DB::table('results')
             ->select(DB::raw('sportsman_id, SUM(haul) as haul, SUM(point) as point'))
             ->groupBy(DB::raw('sportsman_id'))
@@ -127,7 +132,8 @@ class HomeController extends Controller
             ->where('contest_id', '=', $id)
             ->orderByRaw('points desc, hauls desc, last_haul desc')
             ->get();
-        return view('app.contest.view', ['ct' => $ct, 'cnt' => $cnt, 'sum' => $sum, 'id' => $id, 'contestName' => $contestName, 'summary' => $summary]);
+        return view('app.contest.view', ['ct' => $ct, 'cnt' => $cnt, 'sum' => $sum, 'id' => $id, 'contestName' => $contestName,
+        'summary' => $summary, 'checker' => $checker]);
     }
 
     public function editContest($id) {

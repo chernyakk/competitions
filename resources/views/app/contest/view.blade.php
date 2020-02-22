@@ -11,9 +11,12 @@
         <a href="/contest/{{ $id }}/final">
             <button class="btn btn-outline-secondary">Финал</button>
         </a>
+        @if($checker) <a href="/contest/{{ $id }}/final/results">
+            <button class="btn btn-outline-success">Итоговые результаты</button>
+        </a> @endif
     </div>
     <h1>{{ $contestName }}</h1>
-    <h2>Итоговая таблица</h2>
+    <h2>Таблица предварительных результатов</h2>
     <br>
     <div class="container">
         <div class="row justify-content-center">

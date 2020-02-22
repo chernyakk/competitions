@@ -9,6 +9,10 @@
             <a href="{{ route('listContest') }}">
                 <button class="btn btn-outline-primary">К списку соревнований</button>
             </a>
+            @if(($finalists[12]->hauls)&&($finalists[13]->hauls)&&($finalists[14]->hauls)&&($finalists[15]->hauls))
+            <a href="/contest/{{ $id }}/final/results" class="float-right">
+                <button class="btn btn-outline-success">Итоговые результаты</button>
+            </a> @endif
         </div>
         <br>
         <div @if ($check1) style="display:none" @endif>

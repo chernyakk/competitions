@@ -16,6 +16,13 @@
             <tbody>
             @foreach($contests as $contest)
                 @if ($contest)
+                <div style="display: none">
+                {{$checker = \Illuminate\Support\Facades\DB::table('final')
+                    ->where('contest_id', '=', $contest->id)
+                    ->where('now_id', '=', 14)
+                    ->value('hauls');
+                }}
+                </div>
                 <tr>
                     <th scope="row">{{ $contest->id }}</th>
                     <td>{{ $contest->name }}</td>
@@ -36,6 +43,12 @@
                                     @if ($contest-> rand != 1) data-toggle="tooltip" data-placement="bottom"
                                     title="Станут доступны после жеребьёвки" disabled
                                 @endif>Результаты</button>
+                        </a>
+                        <a href="/contest/{{ $contest->id }}/final/results" title="Финал" aria-label="Итоги финала">
+                            <button class="btn btn-outline-success btn-sm"
+                                    @if (!$checker) data-toggle="tooltip" data-placement="bottom"
+                                    title="Станет доступен после предварительного этапа" disabled
+                                @endif>Итоги финала</button>
                         </a>
                         <a href="/contest/edit/{{ $contest->id }}" title="Редактировать" aria-label="Редактировать">
                             <button class="btn btn-outline-dark btn-sm">Редактировать</button>
