@@ -26,7 +26,7 @@
                         @foreach($result as $check)
                             {{array_push($checker, $check->hauls)}}
                         @endforeach
-                        <?php $checker = array_search(null, $checker) ?>
+                        <?php $checker = in_array(null, $checker) ?>
                 </div>
                 <tr>
                     <th scope="row">{{ $contest->id }}</th>
@@ -70,24 +70,24 @@
                 @endif
                 <!-- Modal -->
                 <div class="modal fade" id="myModal{{ $contest->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title" id="myModalLabel">Удаление соревнования</h4>
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                </div>
-                                <div class="modal-body">
-                                    <h4>Вы уверены, что хотите удалить соревнование {{$contest->name}}?</h4>
-                                </div>
-                                <div class="modal-footer">
-                                    <a href="/contest/delete/{{$contest->id}}" title="Удалить" aria-label="Удалить">
-                                        <button type="button" class="btn btn-outline-danger">Да</button>
-                                    </a>
-                                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Нет</button>
-                                </div>
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="myModalLabel">Удаление соревнования</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <h4>Вы уверены, что хотите удалить соревнование {{$contest->name}}?</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="/contest/delete/{{$contest->id}}" title="Удалить" aria-label="Удалить">
+                                    <button type="button" class="btn btn-outline-danger">Да</button>
+                                </a>
+                                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Нет</button>
                             </div>
                         </div>
                     </div>
+                </div>
             @endforeach
             </tbody>
     </table>

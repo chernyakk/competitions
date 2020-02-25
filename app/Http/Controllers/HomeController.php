@@ -114,7 +114,7 @@ class HomeController extends Controller
         foreach($result as $check) {
             array_push($checker, $check->hauls);
         }
-        $checker = array_search(null, $checker);
+        $checker = in_array(null, $checker);
 
         $sum = DB::table('results')
             ->select(DB::raw('sportsman_id, SUM(haul) as haul, SUM(point) as point'))
@@ -368,6 +368,13 @@ class HomeController extends Controller
             return redirect()->route('listContest');}
 
         return view('app.contest.changer');
+    }
+
+    public function resetFinal($contestId) {
+        DB::table('final')
+            ->where('contest_id', '=', $contestId)
+            ->delete();
+        return redirect()->route('finalOfContest', $contestId);
     }
 
     public function couplesOfFinal ($id) {

@@ -63,3 +63,5 @@ Route::match(['get', 'post'], '/changer/{contestId}', 'HomeController@changer')-
 Route::match(['get', 'post'], '/configuration', 'HomeController@configuration')->name('configuration');
 
 Route::match(['get', 'post'], '/contest/delete/{id}', 'HomeController@deleteContest')->name('deleteContest');
+
+Route::match(['get', 'post'], '/contest/{id}/reset', 'HomeController@resetFinal')->name('resetFinal');

@@ -3,7 +3,7 @@
 @section('content')
     <div class="text-center">
         <div class="back">
-            @if(($finalists[12]->hauls)&&($finalists[13]->hauls)&&($finalists[14]->hauls)&&($finalists[15]->hauls))
+            @if(isset($finalists[12]->hauls)&&isset($finalists[13]->hauls)&&isset($finalists[14]->hauls)&&isset($finalists[15]->hauls))
             <a href="/contest/{{ $id }}/final/results" class="float-right">
                 <button class="btn btn-outline-success">Итоговые результаты</button>
             </a> @endif
@@ -13,6 +13,7 @@
             <a href="{{ route('listContest') }}">
                 <button class="btn btn-outline-primary">К списку соревнований</button>
             </a>
+            <button class="btn btn-outline-danger float-right" data-toggle="modal" data-target="#myModal">Обнулить финальные пары</button>
         </div>
         <br>
         <div @if ($check1) style="display:none" @endif>
@@ -159,6 +160,26 @@
             @endif
         </div>
         @endif
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Удаление финальных пар</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Обнулить финальные пары?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="/contest/{{$id}}/reset" title="Удалить" aria-label="Удалить">
+                            <button class="btn btn-outline-danger">Да</button>
+                        </a>
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Нет</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 @endsection

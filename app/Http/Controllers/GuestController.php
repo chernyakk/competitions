@@ -53,7 +53,12 @@ class GuestController extends BaseController
         foreach($result as $check) {
             array_push($checker, $check->hauls);
         }
-        $checker = array_search(null, $checker);
+        $checker = in_array(null, $checker);
+
+        $finalChecker = DB::table('final')
+            ->where('contest_id', '=', $id)
+            ->where('now_id', '=', 1)
+            ->value('sportsman_id');
 
         $sum = DB::table('results')
             ->select(DB::raw('sportsman_id, SUM(haul) as haul, SUM(point) as point'))
@@ -84,7 +89,7 @@ class GuestController extends BaseController
             ->value('hauls');
 
         return view('app.contest.guest-view', ['ct' => $ct, 'cnt' => $cnt, 'sum' => $sum, 'id' => $id, 'contestName' => $contestName,
-        'summary' => $summary, 'checker' => $checker]);
+        'summary' => $summary, 'checker' => $checker, 'finalChecker' => $finalChecker]);
     }
 
 
@@ -103,7 +108,8 @@ class GuestController extends BaseController
             ->get()
             ->max();
 
-        return view('app.contest.guest-list-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp, 'tourCount' => $tourCount]);
+        return view('app.contest.guest-list-cards', ['contestId' => $contestId, 'sportsmenInComp' => $sportsmenInComp,
+        'tourCount' => $tourCount]);
     }
 
     public function finalOfCompetition($id) {

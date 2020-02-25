@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+{{ dump($checker) }}
     <div class="float-right">
         <a href="{{ route('guestListContest') }}">
             <button class="btn btn-outline-primary">К списку соревнований</button>
@@ -8,10 +9,10 @@
         <a href="/guest/cards/{{ $id }}">
             <button class="btn btn-outline-danger">Список участников</button>
         </a>
-        <a href="/guest/contest/{{ $id }}/final">
+        @if($finalChecker)<a href="/guest/contest/{{ $id }}/final">
             <button class="btn btn-outline-secondary">Финал</button>
-        </a>
-        @if($checker) <a href="/guest/contest/{{ $id }}/final/results">
+        </a>@endif
+        @if(!$checker) <a href="/guest/contest/{{ $id }}/final/results">
             <button class="btn btn-outline-success">Итоговые результаты</button>
         </a> @endif
     </div>
