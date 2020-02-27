@@ -43,7 +43,30 @@ class HomeController extends Controller
 
         $contests = Contest::all();
 
-        return view('app.contest.index', ['contests' => $contests]);
+        $result = DB::table('contests')
+            ->select('id')
+            ->get();
+
+        $arr = [];
+        foreach($result as $key => $value) {
+            $nowDB = DB::table('final')
+                ->where('contest_id', '=', $value->id)
+                ->whereIn ('now_id', range(13, 16))
+                ->select('hauls')
+                ->get();
+            $checker = [];
+            foreach($nowDB as $check) {
+                array_push($checker, $check->hauls);
+            }
+            if($nowDB->isEmpty()) {
+                $arr[$value->id] = true;
+            }
+            else {
+                $arr[$value->id] = in_array(null, $checker);
+            }
+        }
+
+        return view('app.contest.index', ['contests' => $contests, 'arr' => $arr]);
     }
 
     /**

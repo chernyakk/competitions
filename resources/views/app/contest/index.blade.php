@@ -16,18 +16,6 @@
             <tbody>
             @foreach($contests as $contest)
                 @if ($contest)
-                <div style="display: none">
-                <?php   $result = DB::table('final')
-                            ->where('contest_id', '=', $contest->id)
-                            ->whereIn('now_id', range(13, 16))
-                            ->select('hauls')
-                            ->get();
-                        $checker = array()?>
-                        @foreach($result as $check)
-                            {{array_push($checker, $check->hauls)}}
-                        @endforeach
-                        <?php $checker = in_array(null, $checker) ?>
-                </div>
                 <tr>
                     <th scope="row">{{ $contest->id }}</th>
                     <td>{{ $contest->name }}</td>
@@ -51,7 +39,7 @@
                         </a>
                         <a href="/contest/{{ $contest->id }}/final/results" title="Финал" aria-label="Итоги финала">
                             <button class="btn btn-outline-success btn-sm"
-                                    @if ($checker) data-toggle="tooltip" data-placement="bottom"
+                                    @if ($arr[$contest->id]) data-toggle="tooltip" data-placement="bottom"
                                     title="Станет доступен после предварительного этапа" disabled
                                 @endif>Итоги финала</button>
                         </a>
@@ -59,7 +47,6 @@
                             <button class="btn btn-outline-dark btn-sm">Редактировать</button>
                         </a>
                         <button class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#myModal{{ $contest->id }}">Удалить</button>
-
                     </td>
                 </tr>
                 @else <tr>

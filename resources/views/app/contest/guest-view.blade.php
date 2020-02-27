@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-{{ dump($checker) }}
     <div class="float-right">
         <a href="{{ route('guestListContest') }}">
             <button class="btn btn-outline-primary">К списку соревнований</button>
