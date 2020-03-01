@@ -475,68 +475,207 @@ class HomeController extends Controller
     }
 
     public function finalCouples($id){
-        $doneResults = [];
-        $prevResults = [];
-        $winners = [];
-        $losers = [];
-        $data = DB::table('final')
-            ->where('contest_id', '=', $id)
-            ->whereIn('now_id', range(9, 12))
-            ->orderBy('final.now_id','asc')
+        $pretender1 = DB::table('final')
+            ->join('summary', 'final.sportsman_id', '=', 'summary.sportsman_id')
+            ->where('final.contest_id', '=', $id)
+            ->where('now_id', '=', 9)
+            ->select('final.sportsman_id', 'final.hauls', 'summary.points', 'summary.hauls as old_hauls', 'summary.last_haul',
+                    'final.contest_id', 'final.now_id')
             ->get();
-        foreach($data as $nowSportsman) {
-            array_push($prevResults, $nowSportsman->sportsman_id);
-        }
-        foreach($prevResults as $key => $value) {
-            $doneResults[$value] = DB::table('final')
+        $pretender2 = DB::table('final')
+            ->join('summary', 'final.sportsman_id', '=', 'summary.sportsman_id')
+            ->where('final.contest_id', '=', $id)
+            ->where('now_id', '=', 10)
+            ->select('final.sportsman_id', 'final.hauls', 'summary.points', 'summary.hauls as old_hauls', 'summary.last_haul',
+                    'final.contest_id', 'final.now_id')
+            ->get();
+        $pretender3 = DB::table('final')
+            ->join('summary', 'final.sportsman_id', '=', 'summary.sportsman_id')
+            ->where('final.contest_id', '=', $id)
+            ->where('now_id', '=', 11)
+            ->select('final.sportsman_id', 'final.hauls', 'summary.points', 'summary.hauls as old_hauls', 'summary.last_haul',
+                    'final.contest_id', 'final.now_id')
+            ->get();
+        $pretender4 = DB::table('final')
+            ->join('summary', 'final.sportsman_id', '=', 'summary.sportsman_id')
+            ->where('final.contest_id', '=', $id)
+            ->where('now_id', '=', 12)
+            ->select('final.sportsman_id', 'final.hauls', 'summary.points', 'summary.hauls as old_hauls', 'summary.last_haul',
+                    'final.contest_id', 'final.now_id')
+            ->get();
+
+        if ($pretender1[0]->hauls > $pretender2[0]->hauls) {
+            DB::table('final')
                 ->where('contest_id', '=', $id)
-                ->whereIn('now_id', range(1, 8))
-                ->where('sportsman_id', '=', $value)
-                ->select('hauls')
-                ->first()
-                ->hauls;
+                ->where('now_id','=', 13)
+                ->update(['sportsman_id' => $pretender1[0]->sportsman_id]);
+            DB::table('final')
+                ->where('contest_id', '=', $id)
+                ->where('now_id','=', 15)
+                ->update(['sportsman_id' => $pretender2[0]->sportsman_id]);
         }
-        foreach([9, 11] as $now){
-            if($data[$now-9]->hauls > $data[$now-8]->hauls) {
-                $winners[$now-9] = $data[$now-9];
-                $losers[$now-9] = $data[$now-8];
+        elseif ($pretender1[0]->hauls < $pretender2[0]->hauls) {
+            DB::table('final')
+                ->where('contest_id', '=', $id)
+                ->where('now_id','=', 13)
+                ->update(['sportsman_id' => $pretender2[0]->sportsman_id]);
+            DB::table('final')
+                ->where('contest_id', '=', $id)
+                ->where('now_id','=', 15)
+                ->update(['sportsman_id' => $pretender1[0]->sportsman_id]);
+        }
+        else {
+            if ($pretender1[0]->points > $pretender2[0]->points) {
+                DB::table('final')
+                    ->where('contest_id', '=', $id)
+                    ->where('now_id','=', 13)
+                    ->update(['sportsman_id' => $pretender1[0]->sportsman_id]);
+                DB::table('final')
+                    ->where('contest_id', '=', $id)
+                    ->where('now_id','=', 15)
+                    ->update(['sportsman_id' => $pretender2[0]->sportsman_id]);
+            }
+            elseif ($pretender1[0]->points < $pretender2[0]->points) {
+                DB::table('final')
+                    ->where('contest_id', '=', $id)
+                    ->where('now_id','=', 13)
+                    ->update(['sportsman_id' => $pretender2[0]->sportsman_id]);
+                DB::table('final')
+                    ->where('contest_id', '=', $id)
+                    ->where('now_id','=', 15)
+                    ->update(['sportsman_id' => $pretender1[0]->sportsman_id]);
             }
             else {
-                if($data[$now-9]->hauls < $data[$now-8]->hauls) {
-                    $winners[$now-9] = $data[$now-8];
-                    $losers[$now-9] = $data[$now-9];
+                if ($pretender1[0]->old_hauls > $pretender2[0]->old_hauls) {
+                    DB::table('final')
+                        ->where('contest_id', '=', $id)
+                        ->where('now_id','=', 13)
+                        ->update(['sportsman_id' => $pretender1[0]->sportsman_id]);
+                    DB::table('final')
+                        ->where('contest_id', '=', $id)
+                        ->where('now_id','=', 15)
+                        ->update(['sportsman_id' => $pretender2[0]->sportsman_id]);
+                }
+                elseif ($pretender1[0]->old_hauls < $pretender2[0]->old_hauls) {
+                    DB::table('final')
+                        ->where('contest_id', '=', $id)
+                        ->where('now_id','=', 13)
+                        ->update(['sportsman_id' => $pretender2[0]->sportsman_id]);
+                    DB::table('final')
+                        ->where('contest_id', '=', $id)
+                        ->where('now_id','=', 15)
+                        ->update(['sportsman_id' => $pretender1[0]->sportsman_id]);
                 }
                 else {
-                    if($doneResults[$data[$now-9]->sportsman_id] >= $doneResults[$data[$now-8]->sportsman_id]) {
-                        $winners[$now-9] = $data[$now-9];
-                        $losers[$now-9] = $data[$now-8];
+                    if ($pretender1[0]->last_haul > $pretender2[0]->last_haul) {
+                        DB::table('final')
+                            ->where('contest_id', '=', $id)
+                            ->where('now_id','=', 13)
+                            ->update(['sportsman_id' => $pretender1[0]->sportsman_id]);
+                        DB::table('final')
+                            ->where('contest_id', '=', $id)
+                            ->where('now_id','=', 15)
+                            ->update(['sportsman_id' => $pretender2[0]->sportsman_id]);
                     }
                     else {
-                        $winners[$now-9] = $data[$now-8];
-                        $losers[$now-9] = $data[$now-9];
+                        DB::table('final')
+                            ->where('contest_id', '=', $id)
+                            ->where('now_id','=', 13)
+                            ->update(['sportsman_id' => $pretender2[0]->sportsman_id]);
+                        DB::table('final')
+                            ->where('contest_id', '=', $id)
+                            ->where('now_id','=', 15)
+                            ->update(['sportsman_id' => $pretender1[0]->sportsman_id]);
                     }
                 }
             }
         }
-        DB::table('final')
-            ->where('contest_id', '=', $id)
-            ->where('now_id','=', 13)
-            ->update(['sportsman_id' => $winners[0]->sportsman_id]);
-
-        DB::table('final')
-            ->where('contest_id', '=', $id)
-            ->where('now_id','=', 14)
-            ->update(['sportsman_id' => $winners[2]->sportsman_id]);
-
-        DB::table('final')
-            ->where('contest_id', '=', $id)
-            ->where('now_id','=', 15)
-            ->update(['sportsman_id' => $losers[0]->sportsman_id]);
-
-        DB::table('final')
-            ->where('contest_id', '=', $id)
-            ->where('now_id','=', 16)
-            ->update(['sportsman_id' => $losers[2]->sportsman_id]);
+        if ($pretender3[0]->hauls > $pretender4[0]->hauls) {
+            DB::table('final')
+                ->where('contest_id', '=', $id)
+                ->where('now_id','=', 14)
+                ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
+            DB::table('final')
+                ->where('contest_id', '=', $id)
+                ->where('now_id','=', 16)
+                ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
+        }
+        elseif ($pretender3[0]->hauls < $pretender4[0]->hauls) {
+            DB::table('final')
+                ->where('contest_id', '=', $id)
+                ->where('now_id','=', 14)
+                ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
+            DB::table('final')
+                ->where('contest_id', '=', $id)
+                ->where('now_id','=', 16)
+                ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
+        }
+        else {
+            if ($pretender3[0]->points > $pretender4[0]->points) {
+                DB::table('final')
+                    ->where('contest_id', '=', $id)
+                    ->where('now_id','=', 14)
+                    ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
+                DB::table('final')
+                    ->where('contest_id', '=', $id)
+                    ->where('now_id','=', 16)
+                    ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
+            }
+            elseif ($pretender3[0]->points < $pretender4[0]->points) {
+                DB::table('final')
+                    ->where('contest_id', '=', $id)
+                    ->where('now_id','=', 14)
+                    ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
+                DB::table('final')
+                    ->where('contest_id', '=', $id)
+                    ->where('now_id','=', 16)
+                    ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
+            }
+            else {
+                if ($pretender3[0]->old_hauls > $pretender4[0]->old_hauls) {
+                    DB::table('final')
+                        ->where('contest_id', '=', $id)
+                        ->where('now_id','=', 14)
+                        ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
+                    DB::table('final')
+                        ->where('contest_id', '=', $id)
+                        ->where('now_id','=', 16)
+                        ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
+                }
+                elseif ($pretender3[0]->old_hauls < $pretender4[0]->old_hauls) {
+                    DB::table('final')
+                        ->where('contest_id', '=', $id)
+                        ->where('now_id','=', 14)
+                        ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
+                    DB::table('final')
+                        ->where('contest_id', '=', $id)
+                        ->where('now_id','=', 16)
+                        ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
+                }
+                else {
+                    if ($pretender3[0]->last_haul > $pretender4[0]->last_haul) {
+                        DB::table('final')
+                            ->where('contest_id', '=', $id)
+                            ->where('now_id','=', 14)
+                            ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
+                        DB::table('final')
+                            ->where('contest_id', '=', $id)
+                            ->where('now_id','=', 16)
+                            ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
+                    }
+                    else {
+                        DB::table('final')
+                            ->where('contest_id', '=', $id)
+                            ->where('now_id','=', 14)
+                            ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
+                        DB::table('final')
+                            ->where('contest_id', '=', $id)
+                            ->where('now_id','=', 16)
+                            ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
+                    }
+                }
+            }
+        }
 
         return redirect()-> route('finalOfContest', ['id' => $id]);
     }
