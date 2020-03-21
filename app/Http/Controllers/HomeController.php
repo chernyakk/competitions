@@ -432,37 +432,47 @@ class HomeController extends Controller
         $data = DB::table('final')
             ->join('summary', 'final.sportsman_id', '=', 'summary.sportsman_id')
             ->where('final.contest_id', '=', $id)
-            ->select('summary.hauls as old_hauls', 'final.contest_id', 'final.sportsman_id', 'final.hauls', 'final.now_id')
+            ->select('summary.hauls as hauls', 'summary.points as points', 'summary.last_haul as last_haul',
+            'final.contest_id', 'final.sportsman_id', 'final.now_id')
             ->orderBy('final.now_id','asc')
             ->get();
         $couple1 = $data
             ->whereIn('now_id', [1, 2])
-            ->sortByDesc('hauls')
+            ->sortByDesc('points')
             ->values()
             ->all();
         $couple2 = $data
             ->whereIn('now_id', [3, 4])
-            ->sortByDesc('hauls')
+            ->sortByDesc('points')
             ->values()
             ->all();
         $couple3 = $data
             ->whereIn('now_id', [5, 6])
-            ->sortByDesc('hauls')
+            ->sortByDesc('points')
             ->values()
             ->all();
         $couple4 = $data
             ->whereIn('now_id', [7, 8])
-            ->sortByDesc('hauls')
+            ->sortByDesc('points')
             ->values()
             ->all();
         $places = range(9, 12);
         shuffle($places);
         foreach([$couple1, $couple2, $couple3, $couple4] as $couple) {
-            if ($couple[0]->hauls == $couple[1]->hauls) {
+            if ($couple[0]->points == $couple[1]->points) {
                 $couple = collect($couple)
-                ->sortByDesc('old_hauls')
-                ->values()
-                ->first();
+                    ->sortByDesc('hauls')
+                    ->values()
+                    ->first();
+                if ($couple[0]->hauls == $couple[1]->hauls) {
+                    $couple = collect($couple)
+                        ->sortByDesc('last_haul')
+                        ->values()
+                        ->first();
+                }
+                else {
+                    $couple = collect($couple) -> values() -> first();
+                }
             }
             else {$couple = collect($couple) -> values() -> first();};
             DB::table('final')
