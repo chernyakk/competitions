@@ -432,43 +432,56 @@ class HomeController extends Controller
         $data = DB::table('final')
             ->join('summary', 'final.sportsman_id', '=', 'summary.sportsman_id')
             ->where('final.contest_id', '=', $id)
-            ->select('summary.hauls as hauls', 'summary.points as points', 'summary.last_haul as last_haul',
-            'final.contest_id', 'final.sportsman_id', 'final.now_id')
+            ->select('summary.hauls as old_hauls', 'summary.points as points', 'summary.last_haul as last_haul',
+            'final.hauls as hauls', 'final.contest_id', 'final.sportsman_id', 'final.now_id')
             ->orderBy('final.now_id','asc')
             ->get();
         $couple1 = $data
             ->whereIn('now_id', [1, 2])
-            ->sortByDesc('points')
+            ->sortByDesc('hauls')
             ->values()
             ->all();
         $couple2 = $data
             ->whereIn('now_id', [3, 4])
-            ->sortByDesc('points')
+            ->sortByDesc('hauls')
             ->values()
             ->all();
         $couple3 = $data
             ->whereIn('now_id', [5, 6])
-            ->sortByDesc('points')
+            ->sortByDesc('hauls')
             ->values()
             ->all();
         $couple4 = $data
             ->whereIn('now_id', [7, 8])
-            ->sortByDesc('points')
+            ->sortByDesc('hauls')
             ->values()
             ->all();
         $places = range(9, 12);
         shuffle($places);
         foreach([$couple1, $couple2, $couple3, $couple4] as $couple) {
-            if ($couple[0]->points == $couple[1]->points) {
+            dump('Couple', $couple);
+            if ($couple[0]->hauls == $couple[1]->hauls) {
+                dump('Hauls', $couple);
                 $couple = collect($couple)
-                    ->sortByDesc('hauls')
+                    ->sortByDesc('points')
                     ->values()
-                    ->first();
-                if ($couple[0]->hauls == $couple[1]->hauls) {
+                    ->all();
+                if ($couple[0]->points == $couple[1]->points) {
+                    dump('Points', $couple);
                     $couple = collect($couple)
-                        ->sortByDesc('last_haul')
+                        ->sortByDesc('old_hauls')
                         ->values()
-                        ->first();
+                        ->all();
+                    if($couple[0]->old_hauls == $couple[1]->old_hauls) {
+                        dump('Old hauls', $couple);
+                        $couple = collect($couple)
+                            ->sortByDesc('last_haul')
+                            ->values()
+                            ->first();
+                    }
+                    else {
+                        $couple = collect($couple) -> values() -> first();
+                    }
                 }
                 else {
                     $couple = collect($couple) -> values() -> first();
@@ -481,6 +494,7 @@ class HomeController extends Controller
                 ->update(['sportsman_id' => $couple->sportsman_id]);
             array_shift($places);
         }
+        dd("That's all");
         return redirect()-> route('finalOfContest', ['id' => $id]);
     }
 
