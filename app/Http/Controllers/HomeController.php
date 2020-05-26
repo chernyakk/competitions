@@ -459,21 +459,21 @@ class HomeController extends Controller
         $places = range(9, 12);
         shuffle($places);
         foreach([$couple1, $couple2, $couple3, $couple4] as $couple) {
-            dump('Couple', $couple);
+            //dump('Couple', $couple);
             if ($couple[0]->hauls == $couple[1]->hauls) {
-                dump('Hauls', $couple);
+                //dump('Hauls', $couple);
                 $couple = collect($couple)
                     ->sortByDesc('points')
                     ->values()
                     ->all();
                 if ($couple[0]->points == $couple[1]->points) {
-                    dump('Points', $couple);
+                    //dump('Points', $couple);
                     $couple = collect($couple)
                         ->sortByDesc('old_hauls')
                         ->values()
                         ->all();
                     if($couple[0]->old_hauls == $couple[1]->old_hauls) {
-                        dump('Old hauls', $couple);
+                        //dump('Old hauls', $couple);
                         $couple = collect($couple)
                             ->sortByDesc('last_haul')
                             ->values()
