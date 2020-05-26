@@ -628,11 +628,11 @@ class HomeController extends Controller
             DB::table('final')
                 ->where('contest_id', '=', $id)
                 ->where('now_id','=', 14)
-                ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
+                ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
             DB::table('final')
                 ->where('contest_id', '=', $id)
                 ->where('now_id','=', 16)
-                ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
+                ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
         }
         else {
             if ($pretender3[0]->points > $pretender4[0]->points) {
@@ -649,11 +649,11 @@ class HomeController extends Controller
                 DB::table('final')
                     ->where('contest_id', '=', $id)
                     ->where('now_id','=', 14)
-                    ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
+                    ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
                 DB::table('final')
                     ->where('contest_id', '=', $id)
                     ->where('now_id','=', 16)
-                    ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
+                    ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
             }
             else {
                 if ($pretender3[0]->old_hauls > $pretender4[0]->old_hauls) {
@@ -670,11 +670,11 @@ class HomeController extends Controller
                     DB::table('final')
                         ->where('contest_id', '=', $id)
                         ->where('now_id','=', 14)
-                        ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
+                        ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
                     DB::table('final')
                         ->where('contest_id', '=', $id)
                         ->where('now_id','=', 16)
-                        ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
+                        ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
                 }
                 else {
                     if ($pretender3[0]->last_haul > $pretender4[0]->last_haul) {
@@ -691,11 +691,11 @@ class HomeController extends Controller
                         DB::table('final')
                             ->where('contest_id', '=', $id)
                             ->where('now_id','=', 14)
-                            ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
+                            ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
                         DB::table('final')
                             ->where('contest_id', '=', $id)
                             ->where('now_id','=', 16)
-                            ->update(['sportsman_id' => $pretender4[0]->sportsman_id]);
+                            ->update(['sportsman_id' => $pretender3[0]->sportsman_id]);
                     }
                 }
             }
